@@ -2,1075 +2,1785 @@
 import '../styles/global.css';
 ---
 
-<html lang="en">
+<html lang="tr">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>TANIT — Interactive Demo</title>
+  <title>TANIT — İnteraktif Demo</title>
   <link rel="icon" href="/tanit-logo.svg" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@1,600&display=swap" rel="stylesheet" />
 </head>
-<body class="bg-tanit-bg text-tanit-text font-sans antialiased overflow-hidden" style="height:100dvh">
+<body>
 
-  <!-- Demo Banner -->
-  <div id="demo-banner" class="fixed top-0 left-0 right-0 z-50 flex items-center justify-center bg-tanit-purple text-white text-sm font-medium" style="height:2.5rem">
-    🎮 Interactive Demo — explore freely, no account needed
-    <button id="close-banner" class="absolute right-4 text-white/70 hover:text-white text-xl leading-none" aria-label="Close banner">×</button>
-  </div>
+<!-- DEMO BANNER -->
+<div id="demo-banner">
+  🎮 İnteraktif Demo — hesap gerekmez, özgürce keşfet
+  <button id="close-banner" aria-label="Kapat">×</button>
+</div>
 
-  <!-- App Shell -->
-  <div id="app" class="fixed left-0 right-0 bottom-0 flex flex-col" style="top:2.5rem">
+<!-- APP SHELL -->
+<div id="app">
 
-    <!-- App Header -->
-    <header class="flex-shrink-0 border-b border-tanit-border bg-tanit-card flex items-center px-4 gap-3 z-40" style="height:3.5rem">
-      <img src="/tanit-logo.svg" alt="TANIT" style="height:2rem" />
-      <div class="w-px bg-tanit-border mx-1 hidden md:block" style="height:1.5rem"></div>
-      <span class="text-xs font-semibold px-2 py-1 rounded-full hidden md:inline" style="background:rgba(173,101,191,0.18);color:#AD65BF">Demo Mode</span>
-      <div class="flex-1"></div>
-      <a href="/" class="flex items-center gap-1.5 text-xs transition-colors px-3 py-1.5 rounded-lg hover:bg-white/5" style="color:#94a3b8">
-        <svg xmlns="http://www.w3.org/2000/svg" style="height:1rem;width:1rem" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/></svg>
-        Back to website
+  <!-- ══════════════ SIDEBAR ══════════════ -->
+  <aside id="sidebar">
+
+    <!-- Logo -->
+    <div id="sidebar-logo">
+      <a href="/" id="logo-link">
+        <img src="/tanit-logo.svg" id="logo-img" alt="TANIT" />
       </a>
-    </header>
+    </div>
 
-    <!-- Body -->
-    <div class="flex flex-1 overflow-hidden">
+    <!-- Collapse toggle -->
+    <button id="collapse-btn" onclick="toggleSidebar()" aria-label="Sidebar">
+      <svg id="collapse-icon-left" xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/></svg>
+      <svg id="collapse-icon-right" xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor" class="hidden"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+    </button>
 
-      <!-- Sidebar -->
-      <aside class="flex-shrink-0 border-r border-tanit-border bg-tanit-card flex flex-col" style="width:3.5rem" id="sidebar">
-        <nav class="flex-1 p-2 flex flex-col gap-1 mt-2">
-          <button id="nav-dashboard" data-nav="dashboard"
-            class="nav-btn w-full flex items-center gap-3 rounded-lg text-sm font-medium transition-colors active-nav"
-            style="padding:.625rem .75rem"
-            onclick="switchView('dashboard')">
-            <!-- Home -->
-            <svg xmlns="http://www.w3.org/2000/svg" class="flex-shrink-0" style="height:1.25rem;width:1.25rem" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/></svg>
-            <span class="nav-label hidden font-medium">Dashboard</span>
-          </button>
-          <button id="nav-create" data-nav="create"
-            class="nav-btn w-full flex items-center gap-3 rounded-lg text-sm font-medium transition-colors"
-            style="padding:.625rem .75rem;color:#94a3b8"
-            onclick="startCreate()">
-            <!-- PlusCircle -->
-            <svg xmlns="http://www.w3.org/2000/svg" class="flex-shrink-0" style="height:1.25rem;width:1.25rem" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v3m0 0v3m0-3h3m-3 0H9m12 0a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
-            <span class="nav-label hidden">Create Post</span>
-          </button>
-          <button disabled class="w-full flex items-center gap-3 rounded-lg text-sm font-medium cursor-not-allowed" style="padding:.625rem .75rem;color:rgba(148,163,184,.3)">
-            <svg xmlns="http://www.w3.org/2000/svg" class="flex-shrink-0" style="height:1.25rem;width:1.25rem" fill="none" viewBox="0 0 24 24" stroke="currentColor"><rect x="2" y="2" width="20" height="20" rx="5" ry="5" stroke-width="2"/><circle cx="12" cy="12" r="3" stroke-width="2"/><circle cx="17.5" cy="6.5" r=".8" fill="currentColor"/></svg>
-            <span class="nav-label hidden">Instagram</span>
-          </button>
-          <button disabled class="w-full flex items-center gap-3 rounded-lg text-sm font-medium cursor-not-allowed" style="padding:.625rem .75rem;color:rgba(148,163,184,.3)">
-            <svg xmlns="http://www.w3.org/2000/svg" class="flex-shrink-0" style="height:1.25rem;width:1.25rem" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
-            <span class="nav-label hidden">Settings</span>
-          </button>
-        </nav>
-      </aside>
+    <!-- Navigation -->
+    <nav id="sidebar-nav">
+      <button class="nav-item active" data-key="dashboard" onclick="gotoView('dashboard')">
+        <svg class="nav-icon" xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor"><rect x="3" y="3" width="7" height="7" rx="1" stroke-width="2"/><rect x="14" y="3" width="7" height="7" rx="1" stroke-width="2"/><rect x="3" y="14" width="7" height="7" rx="1" stroke-width="2"/><rect x="14" y="14" width="7" height="7" rx="1" stroke-width="2"/></svg>
+        <span class="nav-label">Ana Sayfa</span>
+        <div class="active-bar"></div>
+      </button>
+      <button class="nav-item" data-key="create" onclick="gotoView('create')">
+        <svg class="nav-icon" xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor"><circle cx="12" cy="12" r="9" stroke-width="2"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v8M8 12h8"/></svg>
+        <span class="nav-label">Oluştur+</span>
+        <div class="active-bar"></div>
+      </button>
+      <button class="nav-item" data-key="campaigns" onclick="gotoView('campaigns')">
+        <svg class="nav-icon" xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5.882V19.24a1.76 1.76 0 01-3.417.592l-2.147-6.15M18 13a3 3 0 100-6M5.436 13.683A4.001 4.001 0 017 6h1.832c4.1 0 7.625-1.234 9.168-3v14c-1.543-1.766-5.067-3-9.168-3H7a3.988 3.988 0 01-1.564-.317z"/></svg>
+        <span class="nav-label">Kampanyalar</span>
+        <div class="active-bar"></div>
+      </button>
+      <button class="nav-item" data-key="scheduled" onclick="gotoView('scheduled')">
+        <svg class="nav-icon" xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor"><rect x="3" y="4" width="18" height="18" rx="2" stroke-width="2"/><path stroke-linecap="round" stroke-width="2" d="M16 2v4M8 2v4M3 10h18"/></svg>
+        <span class="nav-label">Planlanan</span>
+        <div class="active-bar"></div>
+      </button>
+      <button class="nav-item" data-key="profile" onclick="gotoView('profile')">
+        <svg class="nav-icon" xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor"><circle cx="12" cy="8" r="4" stroke-width="2"/><path stroke-linecap="round" stroke-width="2" d="M4 20c0-4 3.582-7 8-7s8 3 8 7"/></svg>
+        <span class="nav-label">Profil</span>
+        <div class="active-bar"></div>
+      </button>
+      <button class="nav-item" data-key="settings" onclick="gotoView('settings')">
+        <svg class="nav-icon" xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/><circle cx="12" cy="12" r="3" stroke-width="2"/></svg>
+        <span class="nav-label">Ayarlar</span>
+        <div class="active-bar"></div>
+      </button>
+    </nav>
 
-      <!-- Main content -->
-      <main class="flex-1 overflow-y-auto" style="padding:1.5rem 2rem" id="main-content">
+    <!-- User footer -->
+    <div id="sidebar-footer">
+      <button id="theme-toggle-btn" class="footer-btn">
+        <svg id="theme-icon" class="nav-icon" xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor"><circle cx="12" cy="12" r="5" stroke-width="2"/><path stroke-linecap="round" stroke-width="2" d="M12 2v2M12 20v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M2 12h2M20 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg>
+        <span class="nav-label">Light Mode</span>
+      </button>
+      <div id="user-row">
+        <div id="user-avatar">D</div>
+        <div id="user-info" class="nav-label-block">
+          <p id="user-name">Demo User</p>
+          <p id="user-email">demo@tanit.app</p>
+        </div>
+        <button id="logout-btn" title="Çıkış">
+          <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/></svg>
+        </button>
+      </div>
+    </div>
 
-        <!-- ===== DASHBOARD ===== -->
-        <div id="view-dashboard">
-          <div style="max-width:60rem;margin:0 auto">
+  </aside>
 
-            <!-- Header row -->
-            <div class="flex items-center justify-between" style="margin-bottom:2rem">
-              <div>
-                <h1 style="font-size:1.5rem;font-weight:600">Welcome back, Demo User</h1>
-                <p style="color:#94a3b8;margin-top:.25rem">Here's your content overview.</p>
-              </div>
-              <button onclick="startCreate()" class="flex items-center gap-2 btn-primary" style="padding:.5rem 1rem;border-radius:.5rem;font-size:.875rem;font-weight:500">
-                <svg xmlns="http://www.w3.org/2000/svg" style="height:1rem;width:1rem" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
-                Create Post
-              </button>
-            </div>
+  <!-- ══════════════ MAIN ══════════════ -->
+  <main id="main-content">
 
-            <!-- Stats -->
-            <div class="grid grid-cols-3 gap-4" style="margin-bottom:2rem">
-              <div class="stat-card flex items-center gap-4">
-                <div class="stat-icon" style="background:rgba(16,185,129,.1)">
-                  <svg xmlns="http://www.w3.org/2000/svg" style="height:1.5rem;width:1.5rem;color:#34d399" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
-                </div>
-                <div><p id="stat-published" style="font-size:1.5rem;font-weight:700">3</p><p style="font-size:.875rem;color:#94a3b8">Published</p></div>
-              </div>
-              <div class="stat-card flex items-center gap-4">
-                <div class="stat-icon" style="background:rgba(245,158,11,.1)">
-                  <svg xmlns="http://www.w3.org/2000/svg" style="height:1.5rem;width:1.5rem;color:#fbbf24" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
-                </div>
-                <div><p style="font-size:1.5rem;font-weight:700">1</p><p style="font-size:.875rem;color:#94a3b8">Scheduled</p></div>
-              </div>
-              <div class="stat-card flex items-center gap-4">
-                <div class="stat-icon" style="background:rgba(59,130,246,.1)">
-                  <svg xmlns="http://www.w3.org/2000/svg" style="height:1.5rem;width:1.5rem;color:#60a5fa" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
-                </div>
-                <div><p style="font-size:1.5rem;font-weight:700">2</p><p style="font-size:.875rem;color:#94a3b8">Drafts</p></div>
-              </div>
-            </div>
+    <!-- Breadcrumb -->
+    <nav id="breadcrumb" class="bc hidden"></nav>
 
-            <!-- Published -->
-            <section style="margin-bottom:2rem">
-              <div class="flex items-center gap-2" style="margin-bottom:1rem">
-                <svg xmlns="http://www.w3.org/2000/svg" style="height:1.25rem;width:1.25rem;color:#34d399" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
-                <h2 style="font-size:1.125rem;font-weight:600">Published</h2>
-                <span id="pub-count-label" style="font-size:.875rem;color:#94a3b8">(3)</span>
-              </div>
-              <div id="published-grid" class="post-grid">
-                <div class="post-card">
-                  <div class="post-thumb"><img src="/demo-post.png" class="thumb-img" alt="Post"/><span class="post-badge" style="background:rgba(16,185,129,.15);color:#34d399">Published</span></div>
-                  <div class="post-info"><p class="post-title">Summer collection launch ✨</p><p class="post-date">2 days ago</p></div>
-                </div>
-                <div class="post-card">
-                  <div class="post-thumb"><img src="/demo-photo.avif" class="thumb-img" style="filter:hue-rotate(20deg) saturate(1.3)" alt="Post"/><span class="post-badge" style="background:rgba(16,185,129,.15);color:#34d399">Published</span></div>
-                  <div class="post-info"><p class="post-title">New arrivals — shop now 🛍️</p><p class="post-date">5 days ago</p></div>
-                </div>
-                <div class="post-card">
-                  <div class="post-thumb"><img src="/demo-post.png" class="thumb-img" style="filter:brightness(.88) contrast(1.1)" alt="Post"/><span class="post-badge" style="background:rgba(16,185,129,.15);color:#34d399">Published</span></div>
-                  <div class="post-info"><p class="post-title">Weekend style guide 💫</p><p class="post-date">1 week ago</p></div>
-                </div>
-                <!-- injected after publish -->
-              </div>
-            </section>
+    <!-- ────────────────────────────────────
+         VIEW: DASHBOARD
+    ──────────────────────────────────── -->
+    <div id="view-dashboard" class="view" style="max-width:60rem;margin:0 auto">
 
-            <!-- Scheduled -->
-            <section style="margin-bottom:2rem">
-              <div class="flex items-center gap-2" style="margin-bottom:1rem">
-                <svg xmlns="http://www.w3.org/2000/svg" style="height:1.25rem;width:1.25rem;color:#fbbf24" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
-                <h2 style="font-size:1.125rem;font-weight:600">Scheduled</h2>
-                <span style="font-size:.875rem;color:#94a3b8">(1)</span>
-              </div>
-              <div class="post-grid">
-                <div class="post-card" style="border-color:rgba(245,158,11,.25)">
-                  <div class="post-thumb"><img src="/demo-photo.avif" class="thumb-img" style="filter:sepia(.3)" alt="Post"/><span class="post-badge" style="background:rgba(245,158,11,.15);color:#fbbf24">Scheduled</span></div>
-                  <div class="post-info"><p class="post-title">Friday drop 🔥</p><p class="post-date" style="color:#fbbf24">Tomorrow · 7:00 PM</p></div>
-                </div>
-              </div>
-            </section>
+      <!-- Header -->
+      <div class="dash-header">
+        <div>
+          <h1 class="display-heading">Hoşgeldin, Demo User!</h1>
+          <p class="muted-text" style="margin-top:.25rem">İçeriğini yönet</p>
+        </div>
+        <button class="gradient-btn" onclick="gotoView('create')" style="padding:.5rem 1.25rem;border-radius:.625rem;font-size:.875rem;display:flex;align-items:center;gap:.5rem">
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 4v16m8-8H4"/></svg>
+          Yeni İçerik Oluştur
+        </button>
+      </div>
 
-            <!-- Drafts -->
-            <section>
-              <div class="flex items-center gap-2" style="margin-bottom:1rem">
-                <svg xmlns="http://www.w3.org/2000/svg" style="height:1.25rem;width:1.25rem;color:#60a5fa" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
-                <h2 style="font-size:1.125rem;font-weight:600">Drafts</h2>
-                <span style="font-size:.875rem;color:#94a3b8">(2)</span>
-              </div>
-              <div class="post-grid">
-                <div class="post-card">
-                  <div class="post-thumb"><img src="/demo-post.png" class="thumb-img" style="filter:grayscale(.5)" alt="Draft"/><span class="post-badge" style="background:rgba(255,255,255,.07);color:#94a3b8">Draft</span></div>
-                  <div class="post-info"><p class="post-title" style="color:#94a3b8">Untitled draft</p><p class="post-date">3 hours ago</p></div>
-                </div>
-                <div class="post-card">
-                  <div class="post-thumb"><img src="/demo-photo.avif" class="thumb-img" style="filter:grayscale(.3) brightness(.85)" alt="Draft"/><span class="post-badge" style="background:rgba(255,255,255,.07);color:#94a3b8">Draft</span></div>
-                  <div class="post-info"><p class="post-title" style="color:#94a3b8">Product showcase</p><p class="post-date">Yesterday</p></div>
-                </div>
-              </div>
-            </section>
-
+      <!-- Stats -->
+      <div class="stats-grid">
+        <div class="stat-card">
+          <div class="stat-icon" style="background:rgba(167,139,250,.12)">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24" stroke="#A78BFA"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+          </div>
+          <div>
+            <p id="stat-published" class="stat-num">3</p>
+            <p class="stat-label">Yayınlanan</p>
           </div>
         </div>
+        <div class="stat-card">
+          <div class="stat-icon" style="background:rgba(251,191,36,.1)">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24" stroke="#fbbf24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+          </div>
+          <div>
+            <p id="stat-scheduled" class="stat-num">1</p>
+            <p class="stat-label">Planlanmış</p>
+          </div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon" style="background:rgba(96,165,250,.1)">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24" stroke="#60a5fa"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+          </div>
+          <div>
+            <p id="stat-drafts" class="stat-num">2</p>
+            <p class="stat-label">Taslak</p>
+          </div>
+        </div>
+      </div>
 
-        <!-- ===== STEP 1: UPLOAD ===== -->
-        <div id="view-create-1" class="hidden">
-          <div style="max-width:56rem;margin:0 auto">
-            <div class="create-header">
-              <a href="#" onclick="switchView('dashboard');return false" class="icon-btn">
-                <svg xmlns="http://www.w3.org/2000/svg" style="height:1.25rem;width:1.25rem" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/></svg>
-              </a>
-              <div>
-                <h1 style="font-size:1.25rem;font-weight:600">Create New Post</h1>
-                <p style="font-size:.875rem;color:#94a3b8">Generate AI-powered content for your Instagram</p>
+      <!-- Published Section -->
+      <section class="dash-section">
+        <button class="section-toggle" onclick="toggleSection('published')" aria-expanded="true">
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="#A78BFA"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+          <h2 class="section-title">Yayınlanan</h2>
+          <span id="pub-count" class="section-count">(3)</span>
+          <svg id="chevron-published" class="chevron" xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+        </button>
+        <div id="section-published" class="section-body">
+          <div id="published-grid" class="post-grid">
+            <div class="post-card" onclick="openPostDetail(this)">
+              <div class="post-thumb">
+                <img src="/demo-post.png" class="thumb-img" alt="Post"/>
+                <span class="post-badge badge-published">Yayınlanan</span>
+              </div>
+              <div class="post-info">
+                <p class="post-title">Yaz koleksiyonu lansmanı ✨</p>
+                <p class="post-date">2 gün önce</p>
               </div>
             </div>
-            <!-- Step indicator -->
-            <div id="step-indicator-1"></div>
-
-            <div class="content-card" style="margin-top:1.5rem">
-              <h2 style="font-size:1rem;font-weight:600;margin-bottom:.25rem">Choose a product photo</h2>
-              <p style="font-size:.875rem;color:#94a3b8;margin-bottom:1.5rem">Pick one of the sample images below — in the real app you'd upload your own.</p>
-
-              <div class="grid grid-cols-2 gap-4" style="max-width:28rem">
-                <button class="preset-img-btn" onclick="selectPresetImage('/demo-photo.avif', this)" id="preset-0">
-                  <img src="/demo-photo.avif" class="w-full h-full object-contain" alt="Product photo" />
-                  <div class="preset-label">📦 Product Photo</div>
-                </button>
-                <button class="preset-img-btn" onclick="selectPresetImage('/demo-post.png', this)" id="preset-1">
-                  <img src="/demo-post.png" class="w-full h-full object-contain" alt="Fashion shot" />
-                  <div class="preset-label">👗 Fashion Shot</div>
-                </button>
+            <div class="post-card" onclick="openPostDetail(this)">
+              <div class="post-thumb">
+                <img src="/demo-photo.avif" class="thumb-img" style="filter:hue-rotate(15deg) saturate(1.2)" alt="Post"/>
+                <span class="post-badge badge-published">Yayınlanan</span>
               </div>
-
-              <!-- Upload progress -->
-              <div id="upload-area" class="hidden" style="margin-top:1.5rem">
-                <p style="font-size:.875rem;color:#94a3b8;margin-bottom:.5rem">Uploading...</p>
-                <div style="height:.375rem;background:#1f1f2e;border-radius:9999px;overflow:hidden;max-width:28rem">
-                  <div id="upload-bar" style="height:100%;width:0%;background:#AD65BF;border-radius:9999px;transition:width .1s linear"></div>
-                </div>
+              <div class="post-info">
+                <p class="post-title">Yeni gelenler — hemen al 🛍️</p>
+                <p class="post-date">5 gün önce</p>
+              </div>
+            </div>
+            <div class="post-card" onclick="openPostDetail(this)">
+              <div class="post-thumb">
+                <img src="/demo-post.png" class="thumb-img" style="filter:brightness(.85) contrast(1.1)" alt="Post"/>
+                <span class="post-badge badge-published">Yayınlanan</span>
+              </div>
+              <div class="post-info">
+                <p class="post-title">Hafta sonu stil rehberi 💫</p>
+                <p class="post-date">1 hafta önce</p>
               </div>
             </div>
           </div>
         </div>
+      </section>
 
-        <!-- ===== STEP 2: ENHANCE ===== -->
-        <div id="view-create-2" class="hidden">
-          <div style="max-width:56rem;margin:0 auto">
-            <div class="create-header">
-              <button class="icon-btn" onclick="switchView('create-1')">
-                <svg xmlns="http://www.w3.org/2000/svg" style="height:1.25rem;width:1.25rem" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/></svg>
-              </button>
-              <div>
-                <h1 style="font-size:1.25rem;font-weight:600">Create New Post</h1>
-                <p style="font-size:.875rem;color:#94a3b8">Generate AI-powered content for your Instagram</p>
+      <!-- Scheduled Section -->
+      <section class="dash-section">
+        <button class="section-toggle" onclick="toggleSection('scheduled-sec')" aria-expanded="true">
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="#fbbf24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+          <h2 class="section-title">Planlanmış</h2>
+          <span class="section-count">(1)</span>
+          <svg id="chevron-scheduled-sec" class="chevron" xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+        </button>
+        <div id="section-scheduled-sec" class="section-body">
+          <div class="post-grid">
+            <div class="post-card" style="border-color:rgba(251,191,36,.2)" onclick="openPostDetail(this)">
+              <div class="post-thumb">
+                <img src="/demo-photo.avif" class="thumb-img" style="filter:sepia(.25)" alt="Post"/>
+                <span class="post-badge badge-scheduled">Planlanmış</span>
               </div>
-            </div>
-            <div id="step-indicator-2"></div>
-
-            <div class="content-card" style="margin-top:1.5rem">
-              <div style="margin-bottom:1rem">
-                <h2 style="font-size:1rem;font-weight:600">Image Variations</h2>
-                <p id="enhance-desc" style="font-size:.875rem;color:#94a3b8;margin-top:.25rem">Generating 6 variations for your product…</p>
-              </div>
-
-              <div class="enhance-grid" id="enhance-grid">
-                <!-- Slots injected by JS -->
-              </div>
-            </div>
-
-            <div class="flex justify-between" style="margin-top:1rem">
-              <button class="btn-outline" onclick="switchView('create-1')">
-                <svg xmlns="http://www.w3.org/2000/svg" style="height:1rem;width:1rem" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/></svg>
-                Back
-              </button>
-              <button id="enhance-continue" class="btn-primary" disabled onclick="switchView('create-3');startGenerate()">
-                Continue
-                <svg xmlns="http://www.w3.org/2000/svg" style="height:1rem;width:1rem" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
-              </button>
-            </div>
-          </div>
-        </div>
-
-        <!-- ===== STEP 3: GENERATE ===== -->
-        <div id="view-create-3" class="hidden">
-          <div style="max-width:56rem;margin:0 auto">
-            <div class="create-header">
-              <button class="icon-btn" onclick="switchView('create-2')">
-                <svg xmlns="http://www.w3.org/2000/svg" style="height:1.25rem;width:1.25rem" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/></svg>
-              </button>
-              <div>
-                <h1 style="font-size:1.25rem;font-weight:600">Create New Post</h1>
-                <p style="font-size:.875rem;color:#94a3b8">Generate AI-powered content for your Instagram</p>
-              </div>
-            </div>
-            <div id="step-indicator-3"></div>
-
-            <div class="grid grid-cols-1 gap-4" style="margin-top:1.5rem">
-
-              <!-- Prompt card -->
-              <div class="content-card">
-                <h2 style="font-size:1rem;font-weight:600;margin-bottom:.25rem">Your Prompt</h2>
-                <p style="font-size:.875rem;color:#94a3b8;margin-bottom:.75rem">Describe your product or the vibe you want</p>
-                <textarea id="prompt-input" rows="3"
-                  class="w-full"
-                  style="background:#0a0a0f;border:1px solid #1f1f2e;border-radius:.5rem;padding:.75rem;color:#F1F1F1;font-size:.875rem;resize:none;outline:none;font-family:inherit"
-                  placeholder="e.g. Elegant summer dress, beach vibes, colorful...">Stylish clothing item, elegant and modern, perfect for social media</textarea>
-                <button id="generate-btn" onclick="runGenerate()" class="btn-primary w-full flex items-center justify-center gap-2" style="margin-top:.75rem">
-                  <svg xmlns="http://www.w3.org/2000/svg" style="height:1rem;width:1rem" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 3l14 9-14 9V3z"/></svg>
-                  Generate Caption &amp; Hashtags
-                </button>
-              </div>
-
-              <!-- Caption card -->
-              <div id="caption-card" class="content-card hidden">
-                <div class="flex items-center justify-between" style="margin-bottom:.5rem">
-                  <div><h2 style="font-size:1rem;font-weight:600">Caption</h2><p style="font-size:.75rem;color:#94a3b8">Edit to your liking</p></div>
-                  <button onclick="regenCaption()" class="icon-btn-sm">
-                    <svg xmlns="http://www.w3.org/2000/svg" style="height:.875rem;width:.875rem" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>
-                    Regenerate
-                  </button>
-                </div>
-                <textarea id="caption-output" rows="4"
-                  class="w-full"
-                  style="background:#0a0a0f;border:1px solid #1f1f2e;border-radius:.5rem;padding:.75rem;color:#F1F1F1;font-size:.875rem;resize:none;outline:none;font-family:inherit"></textarea>
-                <p id="caption-char-count" style="font-size:.75rem;color:#94a3b8;margin-top:.25rem">0 characters</p>
-              </div>
-
-              <!-- Hashtags card -->
-              <div id="hashtags-card" class="content-card hidden">
-                <div class="flex items-center justify-between" style="margin-bottom:.75rem">
-                  <div><h2 style="font-size:1rem;font-weight:600">Hashtags</h2><p style="font-size:.75rem;color:#94a3b8">Click × to remove</p></div>
-                  <button onclick="regenHashtags()" class="icon-btn-sm">
-                    <svg xmlns="http://www.w3.org/2000/svg" style="height:.875rem;width:.875rem" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>
-                    Regenerate
-                  </button>
-                </div>
-                <div id="hashtags-output" class="flex flex-wrap gap-2"></div>
-              </div>
-            </div>
-
-            <div class="flex justify-between" style="margin-top:1rem">
-              <button class="btn-outline" onclick="switchView('create-2')">
-                <svg xmlns="http://www.w3.org/2000/svg" style="height:1rem;width:1rem" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/></svg>
-                Back
-              </button>
-              <button id="generate-continue" class="btn-primary" disabled onclick="switchView('create-4');buildPreview()">
-                Continue to Preview
-                <svg xmlns="http://www.w3.org/2000/svg" style="height:1rem;width:1rem" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
-              </button>
-            </div>
-          </div>
-        </div>
-
-        <!-- ===== STEP 4: PREVIEW ===== -->
-        <div id="view-create-4" class="hidden">
-          <div style="max-width:56rem;margin:0 auto">
-            <div class="create-header">
-              <button class="icon-btn" onclick="switchView('create-3')">
-                <svg xmlns="http://www.w3.org/2000/svg" style="height:1.25rem;width:1.25rem" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/></svg>
-              </button>
-              <div>
-                <h1 style="font-size:1.25rem;font-weight:600">Create New Post</h1>
-                <p style="font-size:.875rem;color:#94a3b8">Review and publish your content</p>
-              </div>
-            </div>
-            <div id="step-indicator-4"></div>
-
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-6" style="margin-top:1.5rem">
-
-              <!-- Instagram mockup -->
-              <div>
-                <p style="font-size:.875rem;font-weight:500;color:#94a3b8;margin-bottom:.75rem;text-transform:uppercase;letter-spacing:.05em;font-size:.75rem">Preview</p>
-                <div style="background:#fff;border-radius:.75rem;overflow:hidden;max-width:20rem;box-shadow:0 20px 60px rgba(0,0,0,.5)">
-                  <!-- IG header -->
-                  <div style="display:flex;align-items:center;gap:.5rem;padding:.625rem .75rem;border-bottom:1px solid #f3f4f6">
-                    <div style="width:2rem;height:2rem;border-radius:50%;background:linear-gradient(135deg,#AD65BF,#8B4F9C);flex-shrink:0"></div>
-                    <span style="font-size:.8rem;font-weight:600;color:#111">your_brand</span>
-                    <svg xmlns="http://www.w3.org/2000/svg" style="height:1rem;width:1rem;color:#6b7280;margin-left:auto" fill="none" viewBox="0 0 24 24" stroke="currentColor"><circle cx="5" cy="12" r="1.5" fill="currentColor"/><circle cx="12" cy="12" r="1.5" fill="currentColor"/><circle cx="19" cy="12" r="1.5" fill="currentColor"/></svg>
-                  </div>
-                  <!-- Image -->
-                  <div style="aspect-ratio:1/1;overflow:hidden;background:#f9fafb">
-                    <img id="preview-image" src="/demo-post.png" style="width:100%;height:100%;object-fit:cover" alt="Preview" />
-                  </div>
-                  <!-- Actions -->
-                  <div style="padding:.625rem .75rem">
-                    <div style="display:flex;gap:.875rem;margin-bottom:.5rem">
-                      <svg xmlns="http://www.w3.org/2000/svg" style="height:1.5rem;width:1.5rem;color:#111" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"/></svg>
-                      <svg xmlns="http://www.w3.org/2000/svg" style="height:1.5rem;width:1.5rem;color:#111" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"/></svg>
-                      <svg xmlns="http://www.w3.org/2000/svg" style="height:1.5rem;width:1.5rem;color:#111;margin-left:auto" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z"/></svg>
-                    </div>
-                    <p id="preview-caption-text" style="font-size:.7rem;color:#111;line-height:1.4">
-                      <strong>your_brand</strong> Caption will appear here…
-                    </p>
-                    <p id="preview-hashtag-text" style="font-size:.7rem;color:#3b82f6;margin-top:.25rem;line-height:1.4"></p>
-                  </div>
-                </div>
-              </div>
-
-              <!-- Details panel -->
-              <div class="flex flex-col gap-4">
-                <div class="content-card">
-                  <h3 style="font-size:.875rem;font-weight:600;margin-bottom:.5rem">Caption</h3>
-                  <p id="preview-caption-panel" style="font-size:.875rem;color:#94a3b8;line-height:1.6"></p>
-                </div>
-                <div class="content-card">
-                  <h3 style="font-size:.875rem;font-weight:600;margin-bottom:.5rem">Hashtags</h3>
-                  <div id="preview-hashtags-panel" class="flex flex-wrap gap-1.5"></div>
-                </div>
-                <div class="content-card" style="background:rgba(173,101,191,.08);border-color:rgba(173,101,191,.3)">
-                  <div class="flex items-center gap-2" style="margin-bottom:.5rem">
-                    <svg xmlns="http://www.w3.org/2000/svg" style="height:1rem;width:1rem;color:#AD65BF" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
-                    <h3 style="font-size:.875rem;font-weight:600;color:#AD65BF">Best time to post</h3>
-                  </div>
-                  <p style="font-size:.875rem;color:#94a3b8">AI suggests <strong style="color:#F1F1F1">Today at 7:00 PM</strong> for maximum reach.</p>
-                </div>
-
-                <button id="publish-btn" onclick="doPublish()" class="btn-primary w-full flex items-center justify-center gap-2" style="font-size:1rem;padding:.75rem 1.5rem">
-                  <svg xmlns="http://www.w3.org/2000/svg" style="height:1.125rem;width:1.125rem" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"/></svg>
-                  Publish to Instagram
-                </button>
-                <button class="btn-outline w-full" onclick="switchView('create-3')">Save as Draft</button>
+              <div class="post-info">
+                <p class="post-title">Cuma dropu 🔥</p>
+                <p class="post-date" style="color:#fbbf24">Yarın · 19:00</p>
               </div>
             </div>
           </div>
         </div>
+      </section>
 
-        <!-- ===== SUCCESS ===== -->
-        <div id="view-success" class="hidden flex items-center justify-center" style="min-height:60vh">
-          <div style="text-align:center;max-width:24rem">
-            <div id="success-icon" style="width:5rem;height:5rem;border-radius:50%;background:rgba(16,185,129,.15);display:flex;align-items:center;justify-content:center;margin:0 auto 1.5rem;animation:popIn .5s cubic-bezier(.34,1.56,.64,1)">
-              <svg xmlns="http://www.w3.org/2000/svg" style="height:2.5rem;width:2.5rem;color:#34d399" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/></svg>
+      <!-- Drafts Section -->
+      <section class="dash-section" style="margin-bottom:0">
+        <button class="section-toggle" onclick="toggleSection('drafts')" aria-expanded="true">
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="#60a5fa"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+          <h2 class="section-title">Taslaklar</h2>
+          <span id="drafts-count" class="section-count">(2)</span>
+          <svg id="chevron-drafts" class="chevron" xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+        </button>
+        <div id="section-drafts" class="section-body">
+          <div id="drafts-grid" class="post-grid">
+            <div class="post-card" onclick="openPostDetail(this)">
+              <div class="post-thumb">
+                <img src="/demo-post.png" class="thumb-img" style="filter:grayscale(.55)" alt="Draft"/>
+                <span class="post-badge badge-draft">Taslak</span>
+              </div>
+              <div class="post-info">
+                <p class="post-title muted-text">İsimsiz taslak</p>
+                <p class="post-date">3 saat önce</p>
+              </div>
             </div>
-            <h1 style="font-size:1.75rem;font-weight:700;margin-bottom:.5rem">Published! 🎉</h1>
-            <p style="color:#94a3b8;margin-bottom:2rem">Your post has been published to Instagram successfully.</p>
-            <button onclick="backToDashboard()" class="btn-primary" style="font-size:1rem;padding:.75rem 2rem">
-              Back to Dashboard
+            <div class="post-card" onclick="openPostDetail(this)">
+              <div class="post-thumb">
+                <img src="/demo-photo.avif" class="thumb-img" style="filter:grayscale(.3) brightness(.8)" alt="Draft"/>
+                <span class="post-badge badge-draft">Taslak</span>
+              </div>
+              <div class="post-info">
+                <p class="post-title muted-text">Ürün vitrini</p>
+                <p class="post-date">Dün</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+    </div>
+
+    <!-- ────────────────────────────────────
+         VIEW: CREATE
+    ──────────────────────────────────── -->
+    <div id="view-create" class="view hidden" style="max-width:42rem;margin:0 auto">
+
+      <!-- COMPOSE SUB-VIEW -->
+      <div id="create-compose">
+        <header style="text-align:center;margin-bottom:2rem">
+          <h1 class="display-heading gradient-text" style="font-size:2.25rem">Ne oluşturmak istersin?</h1>
+          <p class="muted-text" style="margin-top:.5rem">Ürünlerini sihirli içeriklere dönüştür</p>
+        </header>
+
+        <!-- Composer card -->
+        <div id="composer-card">
+          <!-- Attached image thumbnail -->
+          <div id="composer-thumb" class="hidden">
+            <div style="position:relative;display:inline-block">
+              <div id="composer-thumb-img-wrap">
+                <img id="composer-thumb-img" src="/demo-photo.avif" alt="Yüklenen" />
+              </div>
+              <button onclick="removeComposerImage()" id="thumb-remove-btn" aria-label="Kaldır">×</button>
+            </div>
+          </div>
+
+          <!-- Textarea -->
+          <textarea id="composer-textarea" rows="4"
+            placeholder="Ürününü ya da çekmek istediğin atmosferi tarif et…&#10;&#10;Örn: Deri ceket, Paris sokakları, şık ve modern..."></textarea>
+
+          <!-- Bottom bar -->
+          <div id="composer-bar">
+            <div id="composer-chips">
+              <button class="chip" id="upload-chip" onclick="showPresetPicker()">
+                <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
+                Fotoğraf Yükle
+              </button>
+              <button class="chip" id="ai-toggle-btn" onclick="toggleAI()" data-ai="on">
+                <svg id="ai-icon-zap" xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
+                <svg id="ai-icon-zapoff" xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor" class="hidden"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17l-5-5m0 0L7 7m5 5l5-5m-5 5l-5 5"/></svg>
+                AI <span id="ai-label">On</span>
+              </button>
+              <button class="chip" id="settings-chip" onclick="toggleAISettings()">
+                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/><circle cx="12" cy="12" r="3" stroke-width="2"/></svg>
+                Ayarlar
+              </button>
+            </div>
+            <button id="composer-continue-btn" class="gradient-btn" onclick="onComposerContinue()"
+              style="padding:.5rem 1.125rem;border-radius:.625rem;font-size:.875rem;display:flex;align-items:center;gap:.375rem;flex-shrink:0">
+              <svg id="continue-img-icon" xmlns="http://www.w3.org/2000/svg" width="15" height="15" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
+              <span id="continue-btn-text">Fotoğraf Seç</span>
+              <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
             </button>
           </div>
         </div>
 
-      </main>
+        <!-- AI Settings panel -->
+        <div id="ai-settings-panel" class="hidden">
+          <p class="settings-label">AI AYARLARI</p>
+          <div class="settings-grid">
+            <div>
+              <label class="settings-field-label">Hedef Cinsiyet</label>
+              <div style="position:relative">
+                <select id="gender-select" class="settings-select">
+                  <option value="">Tümü</option>
+                  <option value="female">Kadın</option>
+                  <option value="male">Erkek</option>
+                  <option value="unisex">Unisex</option>
+                </select>
+                <svg style="position:absolute;right:.75rem;top:50%;transform:translateY(-50%);pointer-events:none" xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+              </div>
+            </div>
+            <div>
+              <label class="settings-field-label">Yaş Grubu</label>
+              <div style="position:relative">
+                <select id="age-select" class="settings-select">
+                  <option value="">Tümü</option>
+                  <option value="young">Genç</option>
+                  <option value="adult">Yetişkin</option>
+                  <option value="child">Çocuk</option>
+                </select>
+                <svg style="position:absolute;right:.75rem;top:50%;transform:translateY(-50%);pointer-events:none" xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Preset image picker -->
+        <div id="preset-picker" class="hidden">
+          <p class="settings-label" style="margin-bottom:.75rem">ÖRNEK FOTOĞRAFLAR</p>
+          <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:.75rem;max-width:22rem">
+            <button class="preset-btn" id="preset-a" onclick="selectPreset('/demo-photo.avif','preset-a')">
+              <img src="/demo-photo.avif" alt="Ürün fotoğrafı" style="width:100%;height:100%;object-fit:contain"/>
+              <div class="preset-label-overlay">📦 Ürün Fotoğrafı</div>
+            </button>
+            <button class="preset-btn" id="preset-b" onclick="selectPreset('/demo-post.png','preset-b')">
+              <img src="/demo-post.png" alt="Moda çekimi" style="width:100%;height:100%;object-fit:contain"/>
+              <div class="preset-label-overlay">👗 Moda Çekimi</div>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- TEMPLATE SELECTION SUB-VIEW -->
+      <div id="create-templates" class="hidden">
+        <div class="two-panel">
+
+          <!-- Left: product image -->
+          <div class="panel-card">
+            <div class="panel-card-header">
+              <h2 class="panel-title">Ürün Fotoğrafı</h2>
+              <button class="icon-circle-btn" onclick="backToCompose()" title="Değiştir">
+                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"/></svg>
+              </button>
+            </div>
+            <div class="product-img-wrap">
+              <img id="product-preview-img" src="/demo-photo.avif" alt="Ürün" style="width:100%;height:100%;object-fit:contain"/>
+            </div>
+          </div>
+
+          <!-- Right: templates -->
+          <div class="panel-card">
+            <div class="panel-card-header">
+              <h2 class="panel-title">Fotoğraf Şablonları</h2>
+            </div>
+            <div class="template-grid" id="template-grid">
+              <button class="tpl-btn selected" data-id="flatlay" onclick="toggleTemplate(this)">
+                <div class="tpl-bg" style="background:linear-gradient(135deg,#374151,#1f2937)"></div>
+                <div class="tpl-overlay"></div>
+                <span class="tpl-label">Düz Çekim</span>
+                <div class="tpl-check">✓</div>
+              </button>
+              <button class="tpl-btn selected" data-id="model_tryon" onclick="toggleTemplate(this)">
+                <div class="tpl-bg" style="background:linear-gradient(135deg,#5b21b6,#3b0764)"></div>
+                <div class="tpl-overlay"></div>
+                <span class="tpl-label">Model Dene</span>
+                <div class="tpl-check">✓</div>
+              </button>
+              <button class="tpl-btn" data-id="in_use" onclick="toggleTemplate(this)">
+                <div class="tpl-bg" style="background:linear-gradient(135deg,#be185d,#7f1d1d)"></div>
+                <div class="tpl-overlay"></div>
+                <span class="tpl-label">Kullanımda</span>
+                <div class="tpl-check">✓</div>
+              </button>
+              <button class="tpl-btn" data-id="collage" onclick="toggleTemplate(this)">
+                <div class="tpl-bg" style="background:linear-gradient(135deg,#b45309,#78350f)"></div>
+                <div class="tpl-overlay"></div>
+                <span class="tpl-label">Kolaj</span>
+                <div class="tpl-check">✓</div>
+              </button>
+              <button class="tpl-btn" data-id="back_shot" onclick="toggleTemplate(this)">
+                <div class="tpl-bg" style="background:linear-gradient(135deg,#065f46,#064e3b)"></div>
+                <div class="tpl-overlay"></div>
+                <span class="tpl-label">Arka Görünüm</span>
+                <div class="tpl-check">✓</div>
+              </button>
+              <button class="tpl-btn selected" data-id="photoshoot" onclick="toggleTemplate(this)">
+                <div class="tpl-bg" style="background:linear-gradient(135deg,#0369a1,#1e3a5f)"></div>
+                <div class="tpl-overlay"></div>
+                <span class="tpl-label">Fotoğraf Çekimi</span>
+                <div class="tpl-check">✓</div>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Prompt readonly textarea -->
+        <textarea id="template-prompt-display" class="prompt-readonly" rows="2" readonly
+          placeholder="Sahne tarifiniz burada görünecek…"></textarea>
+
+        <!-- Actions -->
+        <div style="display:flex;justify-content:flex-end;margin-top:.75rem">
+          <button class="gradient-btn" id="generate-btn" onclick="startGenerate()"
+            style="padding:.625rem 1.375rem;border-radius:.625rem;font-size:.9375rem;display:flex;align-items:center;gap:.5rem">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 3l14 9-14 9V3z"/></svg>
+            Oluştur
+            <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
+          </button>
+        </div>
+      </div>
     </div>
+
+    <!-- ────────────────────────────────────
+         VIEW: PREVIEW
+    ──────────────────────────────────── -->
+    <div id="view-preview" class="view hidden" style="max-width:56rem;margin:0 auto">
+      <div class="two-panel" style="align-items:flex-start">
+
+        <!-- Left: image carousel -->
+        <div>
+          <p class="settings-label" style="margin-bottom:.875rem">AI GÖRSELLERİ</p>
+          <div id="preview-carousel" class="preview-carousel">
+            <!-- Slots injected by JS -->
+          </div>
+          <p id="preview-hint" class="muted-text" style="font-size:.75rem;margin-top:.75rem;text-align:center">Birden fazla görsel seçebilirsiniz</p>
+        </div>
+
+        <!-- Right: caption options + hashtags -->
+        <div style="display:flex;flex-direction:column;gap:1rem">
+
+          <div class="panel-card" style="padding:1.25rem">
+            <p class="settings-label" style="margin-bottom:.875rem">AÇIKLAMA STİLİ</p>
+            <div id="caption-styles" style="display:flex;flex-direction:column;gap:.5rem">
+              <label class="caption-style-option selected" data-idx="0">
+                <input type="radio" name="cap-style" value="0" checked style="display:none"/>
+                <div class="cap-style-dot"></div>
+                <div>
+                  <p class="cap-style-name">Profesyonel</p>
+                  <p class="cap-style-preview" id="cap-preview-0"></p>
+                </div>
+              </label>
+              <label class="caption-style-option" data-idx="1">
+                <input type="radio" name="cap-style" value="1" style="display:none"/>
+                <div class="cap-style-dot"></div>
+                <div>
+                  <p class="cap-style-name">Gündelik</p>
+                  <p class="cap-style-preview" id="cap-preview-1"></p>
+                </div>
+              </label>
+              <label class="caption-style-option" data-idx="2">
+                <input type="radio" name="cap-style" value="2" style="display:none"/>
+                <div class="cap-style-dot"></div>
+                <div>
+                  <p class="cap-style-name">Yaratıcı</p>
+                  <p class="cap-style-preview" id="cap-preview-2"></p>
+                </div>
+              </label>
+            </div>
+          </div>
+
+          <div class="panel-card" style="padding:1.25rem">
+            <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:.625rem">
+              <p class="settings-label">HASHTAGLER</p>
+              <button class="regen-btn" onclick="regenHashtags()">
+                <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>
+                Yenile
+              </button>
+            </div>
+            <div id="preview-hashtags" style="display:flex;flex-wrap:wrap;gap:.375rem"></div>
+          </div>
+
+          <button class="gradient-btn" id="to-editor-btn" onclick="gotoEditor()"
+            style="padding:.625rem 1.375rem;border-radius:.625rem;font-size:.875rem;display:flex;align-items:center;justify-content:center;gap:.5rem;width:100%">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>
+            Düzenle
+            <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ────────────────────────────────────
+         VIEW: EDITOR
+    ──────────────────────────────────── -->
+    <div id="view-editor" class="view hidden" style="max-width:56rem;margin:0 auto">
+      <div class="two-panel" style="align-items:flex-start">
+
+        <!-- Left: image with carousel -->
+        <div>
+          <p class="settings-label" style="margin-bottom:.875rem">SEÇİLEN GÖRSELLER</p>
+          <div id="editor-img-wrap" style="position:relative;border-radius:.75rem;overflow:hidden;background:var(--surface);border:1px solid var(--border);max-width:280px">
+            <div style="aspect-ratio:4/5">
+              <img id="editor-main-img" src="/demo-photo.avif" alt="Seçilen" style="width:100%;height:100%;object-fit:contain"/>
+            </div>
+            <button id="editor-prev" class="carousel-arrow" style="left:.5rem" onclick="editorCarousel(-1)">‹</button>
+            <button id="editor-next" class="carousel-arrow" style="right:.5rem" onclick="editorCarousel(1)">›</button>
+            <div id="editor-slide-indicator" style="position:absolute;bottom:.5rem;left:0;right:0;display:flex;justify-content:center;gap:.25rem"></div>
+          </div>
+        </div>
+
+        <!-- Right: caption + hashtags -->
+        <div style="display:flex;flex-direction:column;gap:1rem;flex:1">
+          <div class="panel-card" style="padding:1.25rem">
+            <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:.625rem">
+              <h3 style="font-size:.875rem;font-weight:600">Açıklama</h3>
+              <button class="regen-btn" onclick="regenCaption()">
+                <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>
+                Yenile
+              </button>
+            </div>
+            <textarea id="editor-caption" rows="5"
+              style="width:100%;background:var(--bg);border:1px solid var(--border);border-radius:.625rem;padding:.75rem;color:var(--fg);font-size:.875rem;resize:none;outline:none;font-family:inherit;line-height:1.6"></textarea>
+            <p id="editor-char-count" class="muted-text" style="font-size:.75rem;margin-top:.375rem">0 karakter</p>
+          </div>
+
+          <div class="panel-card" style="padding:1.25rem">
+            <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:.75rem">
+              <h3 style="font-size:.875rem;font-weight:600">Hashtagler</h3>
+              <button class="regen-btn" onclick="regenHashtags()">
+                <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>
+                Yenile
+              </button>
+            </div>
+            <div id="editor-hashtags" style="display:flex;flex-wrap:wrap;gap:.375rem"></div>
+          </div>
+
+          <!-- Action buttons -->
+          <div style="display:flex;gap:.75rem">
+            <button class="outline-btn" onclick="saveDraft()" style="flex:1">
+              Taslak Kaydet
+            </button>
+            <button class="outline-btn" onclick="schedulePost()" style="flex:1;border-color:rgba(251,191,36,.3);color:#fbbf24">
+              <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor"><rect x="3" y="4" width="18" height="18" rx="2" stroke-width="2"/><path stroke-linecap="round" stroke-width="2" d="M16 2v4M8 2v4M3 10h18"/></svg>
+              Planla
+            </button>
+            <button class="gradient-btn" id="publish-btn" onclick="doPublish()"
+              style="flex:1;padding:.625rem 1rem;border-radius:.625rem;font-size:.875rem;display:flex;align-items:center;justify-content:center;gap:.5rem">
+              <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"/></svg>
+              Yayınla
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ────────────────────────────────────
+         VIEW: SCHEDULED
+    ──────────────────────────────────── -->
+    <div id="view-scheduled" class="view hidden" style="max-width:60rem;margin:0 auto">
+      <div class="dash-header">
+        <div>
+          <h1 class="display-heading" style="font-size:1.5rem">Planlanmış Gönderiler</h1>
+          <p class="muted-text" style="margin-top:.25rem">Otomatik paylaşım kuyruğun</p>
+        </div>
+        <button class="gradient-btn" onclick="gotoView('create')" style="padding:.5rem 1.125rem;border-radius:.625rem;font-size:.875rem;display:flex;align-items:center;gap:.5rem">
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 4v16m8-8H4"/></svg>
+          Yeni Planla
+        </button>
+      </div>
+      <div class="post-grid">
+        <div class="post-card" style="border-color:rgba(251,191,36,.2)">
+          <div class="post-thumb">
+            <img src="/demo-photo.avif" class="thumb-img" style="filter:sepia(.25)" alt="Post"/>
+            <span class="post-badge badge-scheduled">Planlanmış</span>
+          </div>
+          <div class="post-info">
+            <p class="post-title">Cuma dropu 🔥</p>
+            <p class="post-date" style="color:#fbbf24">Yarın · 19:00</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ────────────────────────────────────
+         VIEW: SUCCESS
+    ──────────────────────────────────── -->
+    <div id="view-success" class="view hidden" style="display:flex;align-items:center;justify-content:center;min-height:60vh">
+      <div style="text-align:center;max-width:22rem">
+        <div id="success-ring" style="width:5rem;height:5rem;border-radius:50%;background:rgba(167,139,250,.15);display:flex;align-items:center;justify-content:center;margin:0 auto 1.5rem;animation:popIn .5s cubic-bezier(.34,1.56,.64,1)">
+          <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" fill="none" viewBox="0 0 24 24" stroke="#A78BFA"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/></svg>
+        </div>
+        <h1 style="font-size:1.75rem;font-weight:700;margin-bottom:.5rem">Bitti! ✓</h1>
+        <p class="muted-text" style="margin-bottom:2rem">Gönderin Instagram'a başarıyla yayınlandı.</p>
+        <button class="gradient-btn" onclick="backToDashboard()"
+          style="padding:.75rem 2rem;border-radius:.75rem;font-size:1rem">
+          Ana Sayfaya Dön
+        </button>
+      </div>
+    </div>
+
+  </main>
+</div>
+
+<!-- TOAST NOTIFICATION -->
+<div id="toast" class="hidden">
+  <div id="toast-inner">
+    <div id="toast-icon-wrap">
+      <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="#A78BFA"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+    </div>
+    <div>
+      <p id="toast-title" style="font-size:.875rem;font-weight:700">Bitti! ✓</p>
+      <p id="toast-sub" style="font-size:.75rem;color:#A78BFA;font-weight:500">Post ve caption seç →</p>
+    </div>
+    <button onclick="hideToast()" style="background:none;border:none;color:var(--muted-fg);cursor:pointer;padding:.25rem;border-radius:.375rem">
+      <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+    </button>
   </div>
+</div>
 
 </body>
 </html>
 
+<!-- ═══════════════════════════════════════════
+     STYLES
+═══════════════════════════════════════════ -->
 <style>
-  /* ----- Sidebar expand on md ----- */
-  @media (min-width: 768px) {
-    #sidebar { width: 14rem !important; }
-    .nav-label { display: inline !important; }
+  /* ── Tokens ── */
+  :root {
+    --bg:         #080612;
+    --sidebar-bg: #0d0920;
+    --surface:    #130E24;
+    --elevated:   #1D1638;
+    --border:     rgba(49,40,96,.85);
+    --muted-bg:   rgba(196,181,253,.055);
+    --muted-fg:   rgba(196,181,253,.45);
+    --fg:         #F5F3FF;
+    --accent:     #6D28D9;
+    --accent-h:   #7C3AED;
+    --accent-lt:  #A78BFA;
+    --accent-s:   rgba(109,40,217,.15);
+    --sidebar-w:  18rem;
+    --sidebar-w-c: 5rem;
   }
 
-  /* ----- Nav button states ----- */
-  .nav-btn { color: #94a3b8; }
-  .nav-btn.active-nav { background: #AD65BF !important; color: #fff !important; }
-  .nav-btn:not(.active-nav):hover { background: rgba(255,255,255,.05); color: #F1F1F1; }
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
-  /* ----- Stat card ----- */
-  .stat-card {
-    background: #12121a;
-    border: 1px solid #1f1f2e;
-    border-radius: .75rem;
-    padding: 1rem;
+  body {
+    background: var(--bg);
+    color: var(--fg);
+    font-family: Inter, system-ui, -apple-system, sans-serif;
+    overflow: hidden;
+    height: 100dvh;
+    -webkit-font-smoothing: antialiased;
   }
-  .stat-icon {
-    width: 3rem; height: 3rem;
-    border-radius: .5rem;
+
+  /* ── Demo Banner ── */
+  #demo-banner {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 60;
+    height: 2.5rem;
+    background: var(--accent);
     display: flex; align-items: center; justify-content: center;
+    font-size: .8125rem; font-weight: 500; color: #fff;
+    letter-spacing: .01em;
+  }
+  #close-banner {
+    position: absolute; right: 1rem;
+    background: none; border: none; color: rgba(255,255,255,.7);
+    font-size: 1.375rem; line-height: 1; cursor: pointer;
+    transition: color .15s;
+  }
+  #close-banner:hover { color: #fff; }
+
+  /* ── App shell ── */
+  #app {
+    position: fixed; left: 0; right: 0; bottom: 0; top: 2.5rem;
+    display: flex;
+  }
+
+  /* ── Sidebar ── */
+  #sidebar {
+    width: var(--sidebar-w);
+    background: var(--sidebar-bg);
+    border-right: 1px solid var(--border);
+    display: flex; flex-direction: column;
+    flex-shrink: 0;
+    transition: width .28s cubic-bezier(.22,1,.36,1);
+    position: relative; overflow: hidden;
+  }
+  #sidebar.collapsed { width: var(--sidebar-w-c); }
+
+  #sidebar-logo {
+    height: 6rem;
+    display: flex; align-items: center;
+    border-bottom: 1px solid var(--border);
+    padding: 0 1.5rem;
     flex-shrink: 0;
   }
+  #sidebar.collapsed #sidebar-logo { justify-content: center; padding: 0; }
+  #logo-link { display: flex; align-items: center; }
+  #logo-img {
+    height: 2.75rem;
+    transition: height .28s;
+  }
+  #sidebar.collapsed #logo-img { height: 2rem; }
 
-  /* ----- Post grid ----- */
+  #collapse-btn {
+    position: absolute; right: -.75rem; top: 5.25rem;
+    width: 1.5rem; height: 1.5rem;
+    background: var(--sidebar-bg);
+    border: 1px solid var(--border);
+    border-radius: 50%;
+    display: none; align-items: center; justify-content: center;
+    color: var(--muted-fg); cursor: pointer; z-index: 10;
+    transition: color .15s;
+  }
+  #collapse-btn:hover { color: var(--fg); }
+  @media (min-width: 1024px) { #collapse-btn { display: flex; } }
+
+  #sidebar-nav {
+    flex: 1; padding: .75rem .625rem; display: flex; flex-direction: column; gap: .125rem;
+    overflow: hidden;
+  }
+
+  .nav-item {
+    width: 100%; display: flex; align-items: center; gap: .75rem;
+    padding: .75rem .875rem;
+    border-radius: .75rem;
+    background: none; border: none;
+    font-size: .9375rem; font-weight: 500;
+    color: rgba(196,181,253,.55);
+    cursor: pointer; text-align: left;
+    transition: background .15s, color .15s;
+    position: relative; white-space: nowrap;
+  }
+  #sidebar.collapsed .nav-item { justify-content: center; padding: .75rem; }
+  .nav-item:hover:not(.active) { background: var(--muted-bg); color: var(--fg); }
+  .nav-item.active { background: var(--accent-s); color: var(--accent-lt); }
+  .nav-icon { flex-shrink: 0; }
+
+  .nav-label { transition: opacity .2s; }
+  #sidebar.collapsed .nav-label { display: none; }
+
+  .active-bar {
+    position: absolute; right: 0; top: 0; bottom: 0;
+    width: 3px; border-radius: 2px 0 0 2px;
+    background: linear-gradient(to bottom, #818cf8, #f472b6);
+    opacity: 0; transition: opacity .15s;
+  }
+  .nav-item.active .active-bar { opacity: 1; }
+
+  /* Footer */
+  #sidebar-footer {
+    padding: .75rem .625rem;
+    border-top: 1px solid var(--border);
+    display: flex; flex-direction: column; gap: .25rem;
+    flex-shrink: 0;
+  }
+  .footer-btn {
+    width: 100%; display: flex; align-items: center; gap: .75rem;
+    padding: .625rem .875rem; border-radius: .75rem;
+    background: none; border: none; color: rgba(196,181,253,.45);
+    font-size: .875rem; font-weight: 500; cursor: pointer;
+    transition: background .15s, color .15s;
+    white-space: nowrap;
+  }
+  .footer-btn:hover { background: var(--muted-bg); color: var(--fg); }
+  #sidebar.collapsed .footer-btn { justify-content: center; }
+  #sidebar.collapsed .footer-btn .nav-label { display: none; }
+
+  #user-row {
+    display: flex; align-items: center; gap: .75rem;
+    padding: .5rem .875rem; border-radius: .75rem;
+    transition: background .15s; cursor: default;
+    white-space: nowrap;
+  }
+  #user-row:hover { background: var(--muted-bg); }
+  #sidebar.collapsed #user-row { justify-content: center; padding: .5rem; }
+  #user-avatar {
+    width: 2.25rem; height: 2.25rem; border-radius: 50%;
+    background: linear-gradient(135deg, var(--accent), #ec4899);
+    display: flex; align-items: center; justify-content: center;
+    font-weight: 700; font-size: .875rem; color: #fff; flex-shrink: 0;
+  }
+  .nav-label-block { flex: 1; min-width: 0; }
+  #sidebar.collapsed .nav-label-block { display: none; }
+  #user-name { font-size: .875rem; font-weight: 600; color: var(--fg); }
+  #user-email { font-size: .75rem; color: var(--muted-fg); }
+  #logout-btn {
+    background: none; border: none; color: var(--muted-fg);
+    cursor: pointer; padding: .25rem; border-radius: .375rem;
+    transition: color .15s; flex-shrink: 0;
+  }
+  #logout-btn:hover { color: #f87171; }
+  #sidebar.collapsed #logout-btn { display: none; }
+
+  /* ── Main ── */
+  #main-content {
+    flex: 1; overflow-y: auto;
+    padding: 2.5rem 3rem;
+    transition: padding .28s;
+  }
+  @media (max-width: 768px) { #main-content { padding: 1.5rem 1.25rem; } }
+
+  /* ── Breadcrumb ── */
+  .bc {
+    display: flex; align-items: center; gap: .375rem;
+    font-size: .875rem; color: var(--muted-fg);
+    margin-bottom: 1.75rem;
+  }
+  .bc a { color: var(--muted-fg); text-decoration: none; transition: color .15s; cursor: pointer; }
+  .bc a:hover { color: var(--fg); }
+  .bc-sep { opacity: .4; font-size: .75rem; }
+  .bc-current { color: var(--fg); font-weight: 500; }
+
+  /* ── Views ── */
+  .view { animation: fadeIn .18s ease-out; }
+  .hidden { display: none !important; }
+  @keyframes fadeIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }
+
+  /* ── Dashboard ── */
+  .dash-header {
+    display: flex; align-items: flex-start; justify-content: space-between;
+    margin-bottom: 1.75rem; gap: 1rem;
+  }
+  .display-heading {
+    font-family: 'Lora', Georgia, serif;
+    font-style: italic; font-weight: 600;
+  }
+  .muted-text { color: var(--muted-fg); }
+  .gradient-text {
+    background: linear-gradient(135deg, #A78BFA 0%, #f472b6 100%);
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .stats-grid {
+    display: grid; grid-template-columns: repeat(3,1fr); gap: 1rem;
+    margin-bottom: 2rem;
+  }
+  .stat-card {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: .875rem; padding: 1rem 1.125rem;
+    display: flex; align-items: center; gap: 1rem;
+    transition: border-color .2s;
+  }
+  .stat-card:hover { border-color: rgba(167,139,250,.3); }
+  .stat-icon {
+    width: 3rem; height: 3rem; border-radius: .625rem;
+    display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+  }
+  .stat-num { font-size: 1.5rem; font-weight: 700; }
+  .stat-label { font-size: .875rem; color: var(--muted-fg); margin-top: .125rem; }
+
+  .dash-section { margin-bottom: 1.75rem; }
+  .section-toggle {
+    width: 100%; display: flex; align-items: center; gap: .625rem;
+    padding: 0; background: none; border: none; cursor: pointer;
+    margin-bottom: 1rem; text-align: left;
+  }
+  .section-title { font-size: 1.0625rem; font-weight: 600; color: var(--fg); }
+  .section-count { font-size: .875rem; color: var(--muted-fg); }
+  .chevron {
+    margin-left: auto; color: var(--muted-fg);
+    transition: transform .3s cubic-bezier(.22,1,.36,1);
+  }
+  .chevron.collapsed { transform: rotate(-90deg); }
+
+  .section-body {
+    overflow: hidden;
+    transition: max-height .36s cubic-bezier(.22,1,.36,1), opacity .3s;
+    max-height: 800px; opacity: 1;
+  }
+  .section-body.collapsed { max-height: 0 !important; opacity: 0; }
+
+  /* ── Post grid & cards ── */
   .post-grid {
     display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 1rem;
+    grid-template-columns: repeat(2, 1fr); gap: .875rem;
   }
-  @media (min-width: 640px) { .post-grid { grid-template-columns: repeat(3, 1fr); } }
-  @media (min-width: 1024px) { .post-grid { grid-template-columns: repeat(4, 1fr); } }
+  @media (min-width: 640px) { .post-grid { grid-template-columns: repeat(3,1fr); } }
+  @media (min-width: 1024px) { .post-grid { grid-template-columns: repeat(4,1fr); } }
 
   .post-card {
-    background: #12121a;
-    border: 1px solid #1f1f2e;
-    border-radius: .75rem;
-    overflow: hidden;
-    cursor: pointer;
-    transition: border-color .2s, transform .2s;
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: .875rem; overflow: hidden; cursor: pointer;
+    transition: border-color .2s, transform .2s, box-shadow .2s;
   }
-  .post-card:hover { border-color: rgba(173,101,191,.4); transform: translateY(-2px); }
-
-  .post-thumb {
-    position: relative;
-    aspect-ratio: 4/5;
-    background: #0a0a0f;
-    overflow: hidden;
+  .post-card:hover {
+    border-color: rgba(167,139,250,.4);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 24px rgba(0,0,0,.35);
   }
-  .thumb-img { width: 100%; height: 100%; object-fit: contain; }
+  .post-thumb { position: relative; aspect-ratio: 4/5; background: var(--bg); overflow: hidden; }
+  .thumb-img { width: 100%; height: 100%; object-fit: contain; transition: transform .3s; }
+  .post-card:hover .thumb-img { transform: scale(1.03); }
   .post-badge {
     position: absolute; top: .5rem; right: .5rem;
     font-size: .625rem; font-weight: 700;
-    padding: .125rem .5rem; border-radius: 9999px;
+    padding: .1875rem .5rem; border-radius: 9999px;
   }
+  .badge-published { background: rgba(167,139,250,.18); color: #A78BFA; }
+  .badge-scheduled { background: rgba(251,191,36,.15); color: #fbbf24; }
+  .badge-draft { background: rgba(255,255,255,.07); color: var(--muted-fg); }
   .post-info { padding: .75rem; }
   .post-title { font-size: .875rem; font-weight: 500; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-  .post-date { font-size: .75rem; color: #94a3b8; margin-top: .25rem; }
+  .post-date { font-size: .75rem; color: var(--muted-fg); margin-top: .25rem; }
 
-  /* ----- Buttons ----- */
-  .btn-primary {
-    display: inline-flex; align-items: center; gap: .5rem;
-    background: #AD65BF; color: #fff;
-    border: none; border-radius: .5rem;
-    padding: .5rem 1rem; font-size: .875rem; font-weight: 600;
-    cursor: pointer; transition: opacity .2s;
+  /* ── Buttons ── */
+  .gradient-btn {
+    background: linear-gradient(135deg, #6D28D9 0%, #A855F7 50%, #EC4899 100%);
+    background-size: 200% 200%;
+    color: #fff; border: none; cursor: pointer; font-weight: 700;
     font-family: inherit;
+    transition: background-position .35s ease, transform .2s ease, box-shadow .2s ease, opacity .2s;
   }
-  .btn-primary:hover:not(:disabled) { opacity: .88; }
-  .btn-primary:disabled { opacity: .4; cursor: not-allowed; }
+  .gradient-btn:hover:not(:disabled) {
+    background-position: 100% 50%;
+    transform: translateY(-1px);
+    box-shadow: 0 8px 24px rgba(109,40,217,.4);
+  }
+  .gradient-btn:active { transform: translateY(0); }
+  .gradient-btn:disabled { opacity: .4; cursor: not-allowed; }
 
-  .btn-outline {
-    display: inline-flex; align-items: center; gap: .5rem;
-    background: transparent; color: #F1F1F1;
-    border: 1px solid #1f1f2e; border-radius: .5rem;
-    padding: .5rem 1rem; font-size: .875rem; font-weight: 500;
-    cursor: pointer; transition: border-color .2s, color .2s;
-    font-family: inherit;
+  .outline-btn {
+    background: transparent; color: var(--fg);
+    border: 1px solid var(--border); border-radius: .625rem;
+    padding: .625rem 1rem; font-size: .875rem; font-weight: 500;
+    cursor: pointer; font-family: inherit;
+    transition: border-color .2s, color .2s;
+    display: flex; align-items: center; justify-content: center; gap: .375rem;
   }
-  .btn-outline:hover { border-color: #AD65BF; color: #AD65BF; }
+  .outline-btn:hover { border-color: rgba(167,139,250,.5); color: #A78BFA; }
 
-  .icon-btn {
-    display: flex; align-items: center; justify-content: center;
-    width: 2.25rem; height: 2.25rem;
-    border: 1px solid #1f1f2e; border-radius: .5rem;
-    background: transparent; color: #F1F1F1;
-    cursor: pointer; transition: background .2s; flex-shrink: 0;
-    font-family: inherit; text-decoration: none;
+  .regen-btn {
+    background: none; border: none; color: var(--muted-fg);
+    font-size: .75rem; cursor: pointer; display: flex; align-items: center; gap: .25rem;
+    transition: color .15s; font-family: inherit; padding: .25rem .375rem; border-radius: .375rem;
   }
-  .icon-btn:hover { background: rgba(255,255,255,.06); }
+  .regen-btn:hover { color: var(--fg); background: var(--muted-bg); }
 
-  .icon-btn-sm {
-    display: inline-flex; align-items: center; gap: .25rem;
-    font-size: .75rem; color: #94a3b8; background: transparent;
-    border: none; cursor: pointer; transition: color .2s;
-    font-family: inherit;
-  }
-  .icon-btn-sm:hover { color: #F1F1F1; }
-
-  /* ----- Content card ----- */
-  .content-card {
-    background: #12121a;
-    border: 1px solid #1f1f2e;
-    border-radius: .75rem;
-    padding: 1.25rem;
-  }
-
-  /* ----- Create header ----- */
-  .create-header {
-    display: flex; align-items: center; gap: 1rem;
-    margin-bottom: 1.5rem;
-  }
-
-  /* ----- Step indicator ----- */
-  .step-indicator {
-    display: flex; align-items: center;
-    margin-bottom: 1.5rem;
-  }
-  .step-item { display: flex; align-items: center; gap: .75rem; }
-  .step-circle {
-    width: 2.5rem; height: 2.5rem; border-radius: 50%;
-    display: flex; align-items: center; justify-content: center;
-    font-size: .875rem; font-weight: 600; flex-shrink: 0;
-  }
-  .step-circle.done { background: #AD65BF; color: #fff; }
-  .step-circle.active { background: #AD65BF; color: #fff; }
-  .step-circle.pending { background: #1f1f2e; color: #94a3b8; }
-  .step-text-name { font-size: .875rem; font-weight: 500; }
-  .step-text-desc { font-size: .75rem; color: #94a3b8; }
-  .step-line { flex: 1; height: 2px; margin: 0 1rem; }
-  .step-line.done { background: #AD65BF; }
-  .step-line.pending { background: #1f1f2e; }
-
-  /* ----- Preset image buttons ----- */
-  .preset-img-btn {
-    position: relative;
-    aspect-ratio: 4/5;
-    background: #12121a;
-    border: 2px solid #1f1f2e;
-    border-radius: .75rem;
+  /* ── Composer card ── */
+  #composer-card {
+    background: var(--surface);
+    border-radius: 1rem;
     overflow: hidden;
-    cursor: pointer;
-    transition: border-color .2s, transform .2s;
-    padding: 0;
+    box-shadow: 0 0 0 1px rgba(109,40,217,.35), 0 20px 60px rgba(0,0,0,.4);
+    position: relative;
   }
-  .preset-img-btn:hover { border-color: rgba(173,101,191,.5); transform: translateY(-2px); }
-  .preset-img-btn.selected { border-color: #AD65BF; box-shadow: 0 0 0 3px rgba(173,101,191,.2); }
-  .preset-label {
+  #composer-card::before {
+    content: '';
+    position: absolute; inset: 0; border-radius: inherit;
+    padding: 1px;
+    background: linear-gradient(135deg, rgba(109,40,217,.55) 0%, rgba(168,85,247,.25) 50%, rgba(236,72,153,.15) 100%);
+    -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    -webkit-mask-composite: xor; mask-composite: exclude;
+    pointer-events: none;
+  }
+
+  #composer-thumb { padding: 1rem 1.25rem .5rem; }
+  #composer-thumb-img-wrap {
+    width: 4rem; height: 4rem; border-radius: .75rem;
+    overflow: hidden; border: 1px solid var(--border); background: var(--bg);
+  }
+  #composer-thumb-img { width: 100%; height: 100%; object-fit: cover; }
+  #thumb-remove-btn {
+    position: absolute; top: -.375rem; right: -.375rem;
+    width: 1.25rem; height: 1.25rem; border-radius: 50%;
+    background: #ef4444; color: #fff; border: none; cursor: pointer;
+    font-size: .75rem; display: flex; align-items: center; justify-content: center;
+  }
+
+  #composer-textarea {
+    width: 100%; background: transparent; border: none; outline: none;
+    color: var(--fg); font-size: 1rem; font-family: inherit; resize: none;
+    padding: 1.25rem 1.375rem 1rem;
+    line-height: 1.6; min-height: 7rem;
+    caret-color: var(--accent-lt);
+  }
+  #composer-textarea::placeholder { color: rgba(196,181,253,.35); }
+
+  #composer-bar {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: .625rem 1rem;
+    border-top: 1px solid rgba(49,40,96,.6);
+    background: rgba(13,9,32,.5);
+    gap: .5rem; flex-wrap: wrap;
+  }
+  #composer-chips { display: flex; align-items: center; gap: .375rem; flex-wrap: wrap; }
+
+  .chip {
+    display: flex; align-items: center; gap: .375rem;
+    padding: .375rem .75rem; border-radius: .5rem;
+    font-size: .8125rem; font-weight: 500;
+    border: 1px solid rgba(49,40,96,.7);
+    background: var(--muted-bg); color: var(--muted-fg);
+    cursor: pointer; transition: all .15s; font-family: inherit;
+  }
+  .chip:hover { background: var(--elevated); color: var(--fg); border-color: rgba(167,139,250,.3); }
+  .chip.active { background: rgba(109,40,217,.12); color: var(--accent-lt); border-color: rgba(109,40,217,.35); }
+
+  /* ── AI settings panel ── */
+  #ai-settings-panel {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: .875rem; padding: 1.125rem 1.25rem;
+    margin-top: .75rem;
+    animation: fadeIn .2s;
+  }
+  .settings-label {
+    font-size: .6875rem; font-weight: 700; letter-spacing: .08em;
+    color: var(--muted-fg); text-transform: uppercase;
+  }
+  .settings-grid { display: grid; grid-template-columns: repeat(2,1fr); gap: .875rem; margin-top: .875rem; }
+  .settings-field-label {
+    font-size: .75rem; color: var(--muted-fg); text-transform: uppercase;
+    letter-spacing: .06em; display: block; margin-bottom: .375rem; margin-left: .125rem;
+  }
+  .settings-select {
+    width: 100%; padding: .5rem .875rem; padding-right: 2rem;
+    background: var(--bg); border: 1px solid var(--border);
+    border-radius: .75rem; color: var(--fg); font-size: .875rem;
+    outline: none; cursor: pointer; appearance: none; font-family: inherit;
+    transition: border-color .15s;
+  }
+  .settings-select:hover, .settings-select:focus { border-color: rgba(167,139,250,.4); }
+
+  /* ── Preset picker ── */
+  #preset-picker { margin-top: 1.25rem; animation: fadeIn .2s; }
+  .preset-btn {
+    position: relative; aspect-ratio: 4/5;
+    background: var(--surface); border: 2px solid var(--border);
+    border-radius: .75rem; overflow: hidden; cursor: pointer;
+    transition: border-color .2s, transform .2s; padding: 0;
+  }
+  .preset-btn:hover { border-color: rgba(167,139,250,.5); transform: translateY(-2px); }
+  .preset-btn.selected { border-color: var(--accent-lt); box-shadow: 0 0 0 3px rgba(167,139,250,.2); }
+  .preset-label-overlay {
     position: absolute; bottom: 0; left: 0; right: 0;
-    background: linear-gradient(to top, rgba(0,0,0,.7), transparent);
-    padding: .75rem .5rem .5rem;
-    font-size: .75rem; font-weight: 600; color: #fff;
-    text-align: center;
+    background: linear-gradient(to top, rgba(0,0,0,.75), transparent);
+    padding: .875rem .5rem .5rem;
+    font-size: .75rem; font-weight: 600; color: #fff; text-align: center;
   }
 
-  /* ----- Enhance grid ----- */
-  .enhance-grid {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: .75rem;
+  /* ── Two-panel layout ── */
+  .two-panel {
+    display: grid; grid-template-columns: 1fr;
+    gap: 1.25rem; align-items: start;
+  }
+  @media (min-width: 640px) { .two-panel { grid-template-columns: 1fr 1fr; } }
+
+  .panel-card {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: .875rem; overflow: hidden;
+  }
+  .panel-card-header {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 1rem 1.125rem; border-bottom: 1px solid var(--border);
+  }
+  .panel-title { font-size: .9375rem; font-weight: 600; }
+  .icon-circle-btn {
+    width: 2rem; height: 2rem; border-radius: 50%;
+    background: var(--accent-s); border: none; cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    color: var(--accent-lt); transition: background .15s;
+  }
+  .icon-circle-btn:hover { background: rgba(109,40,217,.25); }
+
+  .product-img-wrap {
+    aspect-ratio: 4/5; background: var(--bg);
+    display: flex; align-items: center; justify-content: center;
   }
 
-  .enhance-slot {
-    position: relative;
-    aspect-ratio: 4/5;
-    background: #0a0a0f;
-    border: 2px solid #1f1f2e;
-    border-radius: .625rem;
-    overflow: hidden;
-    cursor: pointer;
-    transition: border-color .2s;
+  /* ── Template grid ── */
+  .template-grid {
+    display: grid; grid-template-columns: repeat(3,1fr); gap: .625rem;
+    padding: .875rem;
   }
-  .enhance-slot.selected { border-color: #AD65BF; box-shadow: 0 0 0 3px rgba(173,101,191,.2); }
-  .enhance-slot:hover:not(.loading) { border-color: rgba(173,101,191,.5); }
+  @media (max-width: 480px) { .template-grid { grid-template-columns: repeat(2,1fr); } }
 
-  .slot-spinner {
+  .tpl-btn {
+    position: relative; aspect-ratio: 1/1;
+    border: 2px solid transparent; border-radius: .625rem;
+    overflow: hidden; cursor: pointer; padding: 0;
+    transition: opacity .2s, transform .2s;
+    opacity: .65;
+  }
+  .tpl-btn:hover { opacity: .9; }
+  .tpl-btn.selected { opacity: 1; border-color: var(--accent-lt); box-shadow: 0 0 0 2px rgba(167,139,250,.25); transform: none; }
+  .tpl-bg { position: absolute; inset: 0; }
+  .tpl-overlay {
     position: absolute; inset: 0;
-    display: flex; flex-direction: column; align-items: center; justify-content: center; gap: .5rem;
-    background: rgba(18,18,26,.95);
+    background: linear-gradient(to top, rgba(0,0,0,.6) 0%, transparent 60%);
   }
-  .spinner-ring {
-    width: 2rem; height: 2rem;
-    border: 2px solid #1f1f2e;
-    border-top-color: #AD65BF;
-    border-radius: 50%;
+  .tpl-label {
+    position: absolute; bottom: .375rem; left: 0; right: 0;
+    text-align: center; font-size: .6875rem; font-weight: 700; color: #fff;
+    drop-shadow: 0 1px 2px rgba(0,0,0,.5);
+  }
+  .tpl-check {
+    position: absolute; top: .375rem; right: .375rem;
+    width: 1.25rem; height: 1.25rem; border-radius: 50%;
+    background: var(--accent-lt); color: #fff;
+    font-size: .7rem; font-weight: 800;
+    display: none; align-items: center; justify-content: center;
+  }
+  .tpl-btn.selected .tpl-check { display: flex; }
+
+  .prompt-readonly {
+    width: 100%; margin-top: .875rem;
+    background: rgba(13,9,32,.4); border: 1px solid var(--border);
+    border-radius: .875rem; padding: .875rem 1rem;
+    color: var(--muted-fg); font-size: .875rem; resize: none; outline: none;
+    font-family: inherit; cursor: default; line-height: 1.6;
+  }
+
+  /* ── Preview carousel ── */
+  .preview-carousel {
+    display: grid; grid-template-columns: repeat(2,1fr); gap: .625rem;
+  }
+  .preview-slot {
+    position: relative; aspect-ratio: 4/5;
+    background: var(--surface); border: 2px solid var(--border);
+    border-radius: .75rem; overflow: hidden; cursor: pointer;
+    transition: border-color .2s, transform .2s;
+  }
+  .preview-slot:hover:not(.loading) { border-color: rgba(167,139,250,.5); transform: translateY(-2px); }
+  .preview-slot.selected { border-color: var(--accent-lt); box-shadow: 0 0 0 3px rgba(167,139,250,.2); }
+  .skeleton-shimmer {
+    position: absolute; inset: 0;
+    background: linear-gradient(90deg, var(--surface) 0%, var(--elevated) 50%, var(--surface) 100%);
+    background-size: 200% 100%;
+    animation: shimmer 1.5s infinite;
+    display: flex; flex-direction: column; align-items: center; justify-content: center; gap: .75rem;
+  }
+  @keyframes shimmer { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }
+  .skeleton-spinner {
+    width: 2rem; height: 2rem; border: 2px solid var(--border);
+    border-top-color: var(--accent-lt); border-radius: 50%;
     animation: spin 1s linear infinite;
   }
-  .slot-label-text { font-size: .7rem; color: #94a3b8; font-weight: 500; }
-
-  .slot-image { position: absolute; inset: 0; }
-  .slot-image img { width: 100%; height: 100%; object-fit: cover; }
-  .slot-image-label {
-    position: absolute; bottom: 0; left: 0; right: 0;
-    background: linear-gradient(to top, rgba(0,0,0,.65), transparent);
-    padding: .5rem .375rem .375rem;
-    font-size: .625rem; font-weight: 600; color: #fff;
-  }
-  .slot-badge {
-    position: absolute; top: .375rem; right: .375rem;
-    width: 1.25rem; height: 1.25rem;
-    background: #AD65BF; border-radius: 50%;
-    display: flex; align-items: center; justify-content: center;
-    font-size: .625rem; font-weight: 700; color: #fff;
-  }
-
-  /* ----- Hashtag chip ----- */
-  .hashtag-chip {
-    display: inline-flex; align-items: center; gap: .25rem;
-    padding: .25rem .625rem;
-    background: rgba(173,101,191,.15);
-    color: #AD65BF;
-    border-radius: 9999px;
-    font-size: .75rem; font-weight: 500;
-    cursor: pointer;
-    transition: background .2s;
-    animation: fadeInUp .3s ease-out;
-  }
-  .hashtag-chip:hover { background: rgba(173,101,191,.28); }
-
-  /* ----- Preview hashtag chips ----- */
-  .preview-chip {
-    display: inline-flex;
-    padding: .125rem .5rem;
-    background: rgba(173,101,191,.15);
-    color: #AD65BF;
-    border-radius: 9999px;
-    font-size: .75rem;
-  }
-
-  /* ----- Animations ----- */
   @keyframes spin { to { transform: rotate(360deg); } }
+  .skeleton-text { font-size: .6875rem; color: var(--muted-fg); font-weight: 500; }
+  .ai-label-text { font-size: .625rem; color: var(--accent-lt); font-weight: 600; }
+  .preview-slot-img { position: absolute; inset: 0; }
+  .preview-slot-img img { width: 100%; height: 100%; object-fit: cover; }
+  .slot-label-bar {
+    position: absolute; bottom: 0; left: 0; right: 0;
+    background: linear-gradient(to top, rgba(0,0,0,.7), transparent);
+    padding: .625rem .5rem .375rem; font-size: .6875rem; font-weight: 600; color: #fff;
+  }
+  .slot-sel-badge {
+    position: absolute; top: .375rem; right: .375rem;
+    background: var(--accent-lt); color: #0d0920;
+    border-radius: 50%; width: 1.375rem; height: 1.375rem;
+    display: flex; align-items: center; justify-content: center;
+    font-size: .6875rem; font-weight: 800;
+  }
 
+  /* ── Caption styles ── */
+  .caption-style-option {
+    display: flex; align-items: flex-start; gap: .75rem;
+    padding: .75rem .875rem; border-radius: .75rem;
+    border: 1px solid var(--border);
+    cursor: pointer; transition: border-color .2s, background .2s;
+  }
+  .caption-style-option:hover { background: var(--muted-bg); border-color: rgba(167,139,250,.3); }
+  .caption-style-option.selected { border-color: var(--accent-lt); background: var(--accent-s); }
+  .cap-style-dot {
+    width: 1rem; height: 1rem; border-radius: 50%; flex-shrink: 0; margin-top: .125rem;
+    border: 2px solid var(--border); transition: border-color .2s, background .2s;
+  }
+  .caption-style-option.selected .cap-style-dot { border-color: var(--accent-lt); background: var(--accent-lt); }
+  .cap-style-name { font-size: .875rem; font-weight: 600; margin-bottom: .25rem; }
+  .cap-style-preview { font-size: .75rem; color: var(--muted-fg); line-height: 1.5; }
+
+  /* ── Hashtag chip ── */
+  .hash-chip {
+    display: inline-flex; align-items: center; gap: .25rem;
+    padding: .25rem .625rem; border-radius: 9999px;
+    background: rgba(167,139,250,.12); color: var(--accent-lt);
+    font-size: .75rem; font-weight: 500; cursor: default;
+    animation: fadeIn .25s ease-out;
+  }
+  .hash-chip button {
+    background: none; border: none; color: inherit; cursor: pointer;
+    opacity: .6; font-size: .75rem; padding: 0; line-height: 1;
+    transition: opacity .15s;
+  }
+  .hash-chip button:hover { opacity: 1; }
+
+  /* ── Carousel arrows ── */
+  .carousel-arrow {
+    position: absolute; top: 50%; transform: translateY(-50%);
+    background: rgba(13,9,32,.8); border: 1px solid var(--border);
+    color: var(--fg); border-radius: 50%;
+    width: 2rem; height: 2rem; font-size: 1.25rem; line-height: 1;
+    cursor: pointer; display: flex; align-items: center; justify-content: center;
+    transition: background .15s; z-index: 5;
+  }
+  .carousel-arrow:hover { background: var(--elevated); }
+
+  /* ── Toast ── */
+  #toast {
+    position: fixed; top: 1.25rem; right: 1.5rem; z-index: 100;
+    animation: toastIn .3s cubic-bezier(.34,1.56,.64,1);
+  }
+  #toast-inner {
+    display: flex; align-items: center; gap: .75rem;
+    background: var(--surface); border: 1px solid rgba(167,139,250,.4);
+    border-radius: 1rem; padding: .875rem 1rem;
+    box-shadow: 0 8px 32px rgba(0,0,0,.5), 0 0 0 1px rgba(167,139,250,.1);
+    min-width: 220px;
+  }
+  #toast-icon-wrap {
+    width: 2.25rem; height: 2.25rem; border-radius: 50%;
+    background: rgba(167,139,250,.12);
+    display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+  }
+  @keyframes toastIn { from { opacity: 0; transform: translateY(-12px) scale(.95); } to { opacity: 1; transform: none; } }
+
+  /* ── Animations ── */
   @keyframes popIn {
     0% { transform: scale(0); opacity: 0; }
     100% { transform: scale(1); opacity: 1; }
   }
 
-  @keyframes fadeInUp {
-    from { opacity: 0; transform: translateY(8px); }
-    to { opacity: 1; transform: translateY(0); }
+  /* ── Misc ── */
+  .back-btn {
+    display: inline-flex; align-items: center; gap: .375rem;
+    background: none; border: none; color: var(--muted-fg); cursor: pointer;
+    font-size: .875rem; font-family: inherit; padding: .25rem 0;
+    transition: color .15s; margin-bottom: 1rem;
   }
-
-  /* ----- Utility ----- */
-  .hidden { display: none !important; }
-  .w-full { width: 100%; }
-  * { box-sizing: border-box; }
+  .back-btn:hover { color: var(--fg); }
 </style>
 
-<script>
-  // ---- State ----
+<!-- ═══════════════════════════════════════════
+     JAVASCRIPT
+═══════════════════════════════════════════ -->
+<script is:inline>
+  // ── State ──────────────────────────────────────────────
+  let sidebarCollapsed = false;
+  let currentView = 'dashboard';
   let selectedImageSrc = '/demo-photo.avif';
-  let selectedSlotIndices = []; // ordered list of selected slot indices
-  let generatedCaption = '';
-  let generatedHashtags = [];
+  let composerHasImage = false;
+  let aiEnabled = true;
+  let settingsOpen = false;
+  let presetPickerOpen = false;
   let publishedCount = 3;
-  let generateRan = false;
+  let draftCount = 2;
 
-  const SLOTS = [
-    { label: 'Model Shot',   src: '/demo-post.png',   filter: '' },
-    { label: 'Product Shot', src: '/demo-photo.avif', filter: 'brightness(1.05) saturate(1.1)' },
-    { label: 'Close-up',     src: '/demo-post.png',   filter: 'brightness(1.1) saturate(1.2) contrast(1.05)' },
-    { label: 'Back Shot',    src: '/demo-photo.avif', filter: 'hue-rotate(20deg) saturate(1.3)' },
-    { label: 'Ad Visual',    src: '/demo-post.png',   filter: 'contrast(1.15) brightness(.9) saturate(.8)' },
-    { label: 'Grid View',    src: '/demo-photo.avif', filter: 'sepia(.35) contrast(1.1)' },
-  ];
-
+  // Caption & hashtag data
   const CAPTIONS = [
-    '✨ Elevate your everyday style with our latest collection. Crafted for those who dare to stand out. Shop now through the link in bio! 🌟',
-    '🔥 New season, new look. Our curated pieces are designed for confidence and comfort. Tap the link in bio to explore! 💫',
-    '💫 Style that speaks before you do. Discover our newest arrivals and make every outfit a statement. 👗 Link in bio!',
+    '✨ Her günü özel kıl. Yeni koleksiyonumuzla tarzını yansıt. Bio\'daki linke tıklayarak alışverişe başla! 🌟',
+    '🔥 Yeni sezon, yeni sen. Güven ve konfor için tasarlanan parçalarımızı keşfet. Link bio\'da! 💫',
+    '💫 Stil, senden önce konuşur. En yeni gelenlerimizi incele ve her kombini bir ifadeye dönüştür. 👗 Bio linki!',
   ];
   const HASHTAG_SETS = [
-    ['fashion','style','ootd','newcollection','instafashion','trendy','outfitoftheday','fashionblogger'],
-    ['fashionista','styleinspo','newlook','clothing','streetstyle','outfitideas','fashionweek','lookbook'],
-    ['dailyoutfit','wearitwell','stylegram','fashionpost','modafemminile','trendalert','outfitpost','chic'],
+    ['moda','stil','ootd','yenikolleksiyon','instamoda','trend','günlükkombin','modablogger'],
+    ['fashionista','stilinspo','yenilook','giyim','sokakstili','kombinönerileri','modahaftası','lookbook'],
+    ['günlükoutfit','şıkgiyim','stilgram','modapost','trendler','trenduyarısı','kombinpost','chic'],
   ];
   let captionIdx = 0;
   let hashtagIdx = 0;
+  let currentCaption = CAPTIONS[0];
+  let currentHashtags = [...HASHTAG_SETS[0]];
 
-  // ---- View switching ----
-  function switchView(viewId) {
-    document.querySelectorAll('[id^="view-"]').forEach(el => el.classList.add('hidden'));
-    const el = document.getElementById('view-' + viewId);
-    if (el) el.classList.remove('hidden');
-  }
-
-  function setActiveNav(key) {
-    document.querySelectorAll('.nav-btn').forEach(btn => btn.classList.remove('active-nav'));
-    const btn = document.getElementById('nav-' + key);
-    if (btn) btn.classList.add('active-nav');
-  }
-
-  // ---- Step indicator ----
-  const STEPS = [
-    { name: 'Upload',   desc: 'Add product image' },
-    { name: 'Enhance',  desc: 'Apply AI variations' },
-    { name: 'Generate', desc: 'Caption & hashtags' },
-    { name: 'Preview',  desc: 'Review and publish' },
+  // Preview slots
+  const PREVIEW_SLOTS = [
+    { label: 'Düz Çekim',    src: '/demo-photo.avif', filter: 'brightness(1.05) saturate(1.1)' },
+    { label: 'Model Dene',   src: '/demo-post.png',   filter: '' },
+    { label: 'Kullanımda',   src: '/demo-photo.avif', filter: 'hue-rotate(10deg) saturate(1.2)' },
+    { label: 'Fotoğraf Çekimi', src: '/demo-post.png', filter: 'contrast(1.1) brightness(.92)' },
   ];
+  let selectedPreviewSlots = [];
+  let editorSlideIdx = 0;
+  let editorImages = [];
 
-  function renderStepIndicator(containerId, activeStep) {
-    const container = document.getElementById(containerId);
-    if (!container) return;
-    let html = '<div class="step-indicator">';
-    STEPS.forEach((step, i) => {
-      const n = i + 1;
-      const isDone = n < activeStep;
-      const isActive = n === activeStep;
-      const circleClass = isDone ? 'done' : (isActive ? 'active' : 'pending');
-      const nameStyle = isActive || isDone ? 'color:#F1F1F1' : 'color:#94a3b8';
-      html += `
-        <div class="step-item">
-          <div class="step-circle ${circleClass}">
-            ${isDone
-              ? '<svg xmlns="http://www.w3.org/2000/svg" style="height:1.1rem;width:1.1rem" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/></svg>'
-              : n}
-          </div>
-          <div class="hidden sm:block">
-            <p class="step-text-name" style="${nameStyle}">${step.name}</p>
-            <p class="step-text-desc">${step.desc}</p>
-          </div>
-        </div>`;
-      if (i < STEPS.length - 1) {
-        html += `<div class="step-line ${isDone ? 'done' : 'pending'}"></div>`;
-      }
+  // ── Sidebar ─────────────────────────────────────────────
+  function toggleSidebar() {
+    sidebarCollapsed = !sidebarCollapsed;
+    const sb = document.getElementById('sidebar');
+    sb.classList.toggle('collapsed', sidebarCollapsed);
+    document.getElementById('collapse-icon-left').classList.toggle('hidden', sidebarCollapsed);
+    document.getElementById('collapse-icon-right').classList.toggle('hidden', !sidebarCollapsed);
+    document.getElementById('main-content').style.transition = 'padding .28s';
+  }
+
+  // ── View routing ─────────────────────────────────────────
+  function gotoView(key) {
+    // Reset create flow when navigating to create from sidebar
+    if (key === 'create') {
+      document.getElementById('create-compose').classList.remove('hidden');
+      document.getElementById('create-templates').classList.add('hidden');
+    }
+
+    // Hide all views
+    document.querySelectorAll('.view').forEach(v => v.classList.add('hidden'));
+
+    // Update nav active state
+    document.querySelectorAll('.nav-item').forEach(btn => {
+      const isActive = btn.dataset.key === key ||
+        (key === 'preview' && btn.dataset.key === 'create') ||
+        (key === 'editor' && btn.dataset.key === 'create');
+      btn.classList.toggle('active', isActive);
     });
-    html += '</div>';
-    container.innerHTML = html;
-  }
 
-  // ---- Dashboard ----
-  function switchView_dashboard() {
-    switchView('dashboard');
-    setActiveNav('dashboard');
-  }
+    currentView = key;
 
-  // ---- Create flow ----
-  function startCreate() {
-    generateRan = false;
-    selectedSlotIndices = [];
-    selectedImageSrc = '/demo-photo.avif';
-    document.querySelectorAll('.preset-img-btn').forEach(b => b.classList.remove('selected'));
-    document.getElementById('upload-area').classList.add('hidden');
-    document.getElementById('upload-bar').style.width = '0%';
-    switchView('create-1');
-    setActiveNav('create');
-    renderStepIndicator('step-indicator-1', 1);
-  }
+    // Show breadcrumb for non-dashboard views
+    const bc = document.getElementById('breadcrumb');
+    const bcMap = {
+      create:    [['Ana Sayfa','dashboard']], current: 'Oluştur+',
+      preview:   [['Ana Sayfa','dashboard'],['Oluştur+','create']], pcurrent: 'Önizleme',
+      editor:    [['Ana Sayfa','dashboard'],['Oluştur+','create'],['Önizleme','preview']], ecurrent: 'Düzenle',
+      scheduled: [['Ana Sayfa','dashboard']], scurrent: 'Planlanan',
+      campaigns: [['Ana Sayfa','dashboard']], ccurrent: 'Kampanyalar',
+      profile:   [['Ana Sayfa','dashboard']], prcurrent: 'Profil',
+      settings:  [['Ana Sayfa','dashboard']], stcurrent: 'Ayarlar',
+    };
 
-  function selectPresetImage(src, btn) {
-    selectedImageSrc = src;
-    document.querySelectorAll('.preset-img-btn').forEach(b => b.classList.remove('selected'));
-    btn.classList.add('selected');
-
-    // Show progress bar
-    const uploadArea = document.getElementById('upload-area');
-    const bar = document.getElementById('upload-bar');
-    uploadArea.classList.remove('hidden');
-    let w = 0;
-    const interval = setInterval(() => {
-      w += Math.random() * 18 + 6;
-      if (w >= 100) {
-        w = 100;
-        bar.style.width = '100%';
-        clearInterval(interval);
-        setTimeout(() => {
-          switchView('create-2');
-          renderStepIndicator('step-indicator-2', 2);
-          buildEnhanceGrid();
-          startEnhanceAnimation();
-        }, 350);
+    if (key !== 'dashboard') {
+      bc.classList.remove('hidden');
+      let html = '';
+      const paths = {
+        create: { parents: [['Ana Sayfa','dashboard']], label: 'Oluştur+' },
+        preview: { parents: [['Ana Sayfa','dashboard'],['Oluştur+','create']], label: 'Önizleme' },
+        editor: { parents: [['Ana Sayfa','dashboard'],['Oluştur+','create'],['Önizleme','preview']], label: 'Düzenle' },
+        scheduled: { parents: [['Ana Sayfa','dashboard']], label: 'Planlanan' },
+        campaigns: { parents: [['Ana Sayfa','dashboard']], label: 'Kampanyalar' },
+        profile:   { parents: [['Ana Sayfa','dashboard']], label: 'Profil' },
+        settings:  { parents: [['Ana Sayfa','dashboard']], label: 'Ayarlar' },
+      };
+      const crumb = paths[key];
+      if (crumb) {
+        html += `<button class="back-btn" onclick="gotoView('${crumb.parents[crumb.parents.length-1][1]}')" style="margin-bottom:0;margin-right:.25rem">
+          <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/></svg>
+        </button>`;
+        crumb.parents.forEach(([label, path]) => {
+          html += `<a onclick="gotoView('${path}')">${label}</a><span class="bc-sep">›</span>`;
+        });
+        html += `<span class="bc-current">${crumb.label}</span>`;
       }
-      bar.style.width = w + '%';
-    }, 80);
+      bc.innerHTML = html;
+    } else {
+      bc.classList.add('hidden');
+    }
+
+    // Show target view
+    const target = document.getElementById('view-' + key);
+    if (target) target.classList.remove('hidden');
   }
 
-  // ---- Enhance step ----
-  function buildEnhanceGrid() {
-    selectedSlotIndices = [];
-    const grid = document.getElementById('enhance-grid');
-    grid.innerHTML = SLOTS.map((slot, i) => `
-      <div class="enhance-slot loading" id="slot-${i}" data-index="${i}" onclick="toggleSlot(${i})">
-        <div class="slot-spinner" id="slot-spinner-${i}">
-          <div class="spinner-ring"></div>
-          <p class="slot-label-text">${slot.label}</p>
-          <p class="slot-label-text" style="color:#AD65BF;font-size:.6rem">Generating…</p>
+  // ── Dashboard ────────────────────────────────────────────
+  function toggleSection(key) {
+    const body = document.getElementById('section-' + key);
+    const chevron = document.getElementById('chevron-' + key);
+    const toggle = body.previousElementSibling;
+    const collapsed = body.classList.toggle('collapsed');
+    chevron.classList.toggle('collapsed', collapsed);
+    toggle.setAttribute('aria-expanded', String(!collapsed));
+  }
+
+  function openPostDetail(card) {
+    card.style.transform = 'scale(0.97)';
+    setTimeout(() => { card.style.transform = ''; }, 150);
+  }
+
+  // ── Composer ─────────────────────────────────────────────
+  function showPresetPicker() {
+    presetPickerOpen = !presetPickerOpen;
+    const pp = document.getElementById('preset-picker');
+    pp.classList.toggle('hidden', !presetPickerOpen);
+  }
+
+  function selectPreset(src, btnId) {
+    selectedImageSrc = src;
+    composerHasImage = true;
+    document.querySelectorAll('.preset-btn').forEach(b => b.classList.remove('selected'));
+    document.getElementById(btnId)?.classList.add('selected');
+
+    // Show thumbnail in composer
+    const thumb = document.getElementById('composer-thumb');
+    const img = document.getElementById('composer-thumb-img');
+    img.src = src;
+    thumb.classList.remove('hidden');
+
+    // Update product preview img for template view
+    document.getElementById('product-preview-img').src = src;
+
+    // Update continue button
+    const btnText = document.getElementById('continue-btn-text');
+    btnText.textContent = 'İleri';
+    const icon = document.getElementById('continue-img-icon');
+    icon.style.display = 'none';
+
+    // Close picker after slight delay
+    setTimeout(() => {
+      document.getElementById('preset-picker').classList.add('hidden');
+      presetPickerOpen = false;
+    }, 300);
+  }
+
+  function removeComposerImage() {
+    composerHasImage = false;
+    selectedImageSrc = '/demo-photo.avif';
+    document.getElementById('composer-thumb').classList.add('hidden');
+    document.querySelectorAll('.preset-btn').forEach(b => b.classList.remove('selected'));
+    document.getElementById('continue-btn-text').textContent = 'Fotoğraf Seç';
+    document.getElementById('continue-img-icon').style.display = '';
+  }
+
+  function toggleAI() {
+    aiEnabled = !aiEnabled;
+    const btn = document.getElementById('ai-toggle-btn');
+    const label = document.getElementById('ai-label');
+    const zapOn = document.getElementById('ai-icon-zap');
+    const zapOff = document.getElementById('ai-icon-zapoff');
+    const textarea = document.getElementById('composer-textarea');
+
+    btn.classList.toggle('active', aiEnabled);
+    label.textContent = aiEnabled ? 'On' : 'Off';
+    zapOn.classList.toggle('hidden', !aiEnabled);
+    zapOff.classList.toggle('hidden', aiEnabled);
+    textarea.style.opacity = aiEnabled ? '1' : '0.4';
+    textarea.disabled = !aiEnabled;
+  }
+
+  function toggleAISettings() {
+    settingsOpen = !settingsOpen;
+    const panel = document.getElementById('ai-settings-panel');
+    panel.classList.toggle('hidden', !settingsOpen);
+    document.getElementById('settings-chip').classList.toggle('active', settingsOpen);
+  }
+
+  function onComposerContinue() {
+    if (!composerHasImage) {
+      showPresetPicker();
+      return;
+    }
+    // Get prompt value and show template view
+    const prompt = document.getElementById('composer-textarea').value ||
+      'Deri ceket, şık ve modern, sosyal medya için mükemmel';
+    document.getElementById('template-prompt-display').value = prompt;
+    document.getElementById('product-preview-img').src = selectedImageSrc;
+
+    document.getElementById('create-compose').classList.add('hidden');
+    document.getElementById('create-templates').classList.remove('hidden');
+  }
+
+  function backToCompose() {
+    document.getElementById('create-templates').classList.add('hidden');
+    document.getElementById('create-compose').classList.remove('hidden');
+  }
+
+  // ── Template selection ────────────────────────────────────
+  function toggleTemplate(btn) {
+    btn.classList.toggle('selected');
+  }
+
+  // ── Generate → Preview ───────────────────────────────────
+  function startGenerate() {
+    const btn = document.getElementById('generate-btn');
+    btn.disabled = true;
+    btn.innerHTML = `
+      <svg style="animation:spin 1s linear infinite" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>
+      Oluşturuluyor…`;
+
+    setTimeout(() => {
+      btn.disabled = false;
+      btn.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 3l14 9-14 9V3z"/></svg>Oluştur<svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>`;
+      gotoView('preview');
+      buildPreview();
+    }, 1800);
+  }
+
+  function buildPreview() {
+    selectedPreviewSlots = [];
+    const grid = document.getElementById('preview-carousel');
+    grid.innerHTML = PREVIEW_SLOTS.map((slot, i) => `
+      <div class="preview-slot loading" id="pvslot-${i}" data-index="${i}" onclick="togglePreviewSlot(${i})">
+        <div class="skeleton-shimmer" id="pvskel-${i}">
+          <div class="skeleton-spinner"></div>
+          <p class="skeleton-text">${slot.label}</p>
+          <p class="ai-label-text">AI üretiyor…</p>
         </div>
-        <div class="slot-image hidden" id="slot-image-${i}">
-          <img src="${slot.src}" style="filter:${slot.filter}" alt="${slot.label}" />
-          <div class="slot-image-label">${slot.label}</div>
+        <div class="preview-slot-img hidden" id="pvimg-${i}">
+          <img src="${slot.src}" style="filter:${slot.filter}" alt="${slot.label}"/>
+          <div class="slot-label-bar">${slot.label}</div>
         </div>
       </div>
     `).join('');
-    document.getElementById('enhance-continue').disabled = true;
-    document.getElementById('enhance-desc').textContent = 'Generating 6 variations for your product…';
-  }
 
-  function startEnhanceAnimation() {
-    const revealTimes = [700, 1400, 2100, 2700, 3400, 4100];
+    // Populate caption previews
+    const shortCaptions = CAPTIONS.map(c => c.slice(0, 55) + '…');
+    shortCaptions.forEach((sc, i) => {
+      const el = document.getElementById('cap-preview-' + i);
+      if (el) el.textContent = sc;
+    });
+
+    // Caption style click handlers
+    document.querySelectorAll('.caption-style-option').forEach(opt => {
+      opt.addEventListener('click', () => {
+        document.querySelectorAll('.caption-style-option').forEach(o => o.classList.remove('selected'));
+        opt.classList.add('selected');
+        captionIdx = parseInt(opt.dataset.idx);
+        currentCaption = CAPTIONS[captionIdx];
+      });
+    });
+
+    buildHashtags(document.getElementById('preview-hashtags'));
+
+    // Staggered reveal
+    const revealTimes = [900, 1800, 2800, 3700];
     revealTimes.forEach((delay, i) => {
       setTimeout(() => {
-        const spinner = document.getElementById(`slot-spinner-${i}`);
-        const image = document.getElementById(`slot-image-${i}`);
-        const slot = document.getElementById(`slot-${i}`);
-        if (spinner) spinner.classList.add('hidden');
-        if (image) image.classList.remove('hidden');
+        const skel = document.getElementById('pvskel-' + i);
+        const img = document.getElementById('pvimg-' + i);
+        const slot = document.getElementById('pvslot-' + i);
+        if (skel) skel.classList.add('hidden');
+        if (img) img.classList.remove('hidden');
         if (slot) slot.classList.remove('loading');
       }, delay);
     });
 
-    // Auto-select slot 0 once it's revealed, then enable Continue
-    setTimeout(() => {
-      toggleSlot(0);
-      document.getElementById('enhance-continue').disabled = false;
-      document.getElementById('enhance-desc').textContent = '1 selected — first tap becomes primary';
-    }, 800);
+    // Auto-select first slot
+    setTimeout(() => togglePreviewSlot(0), 950);
   }
 
-  function toggleSlot(index) {
-    const slot = document.getElementById(`slot-${index}`);
+  function togglePreviewSlot(index) {
+    const slot = document.getElementById('pvslot-' + index);
     if (!slot || slot.classList.contains('loading')) return;
 
-    const pos = selectedSlotIndices.indexOf(index);
+    const pos = selectedPreviewSlots.indexOf(index);
     if (pos >= 0) {
-      selectedSlotIndices.splice(pos, 1);
+      selectedPreviewSlots.splice(pos, 1);
       slot.classList.remove('selected');
-      const badge = slot.querySelector('.slot-badge');
+      const badge = slot.querySelector('.slot-sel-badge');
       if (badge) badge.remove();
     } else {
-      selectedSlotIndices.push(index);
+      selectedPreviewSlots.push(index);
       slot.classList.add('selected');
     }
 
-    // Re-render badges to show order numbers
-    selectedSlotIndices.forEach((idx, order) => {
-      const s = document.getElementById(`slot-${idx}`);
-      const existing = s.querySelector('.slot-badge');
+    // Re-number badges
+    selectedPreviewSlots.forEach((idx, order) => {
+      const s = document.getElementById('pvslot-' + idx);
+      const existing = s.querySelector('.slot-sel-badge');
       if (existing) existing.remove();
       const badge = document.createElement('div');
-      badge.className = 'slot-badge';
+      badge.className = 'slot-sel-badge';
       badge.textContent = order + 1;
       s.appendChild(badge);
     });
-
-    const count = selectedSlotIndices.length;
-    document.getElementById('enhance-continue').disabled = count === 0;
-    document.getElementById('enhance-desc').textContent =
-      count === 0
-        ? 'Select at least one variation to continue'
-        : `${count} selected — first tap becomes primary`;
   }
 
-  // ---- Generate step ----
-  function startGenerate() {
-    generateRan = false;
-    document.getElementById('caption-card').classList.add('hidden');
-    document.getElementById('hashtags-card').classList.add('hidden');
-    document.getElementById('hashtags-output').innerHTML = '';
-    document.getElementById('caption-output').value = '';
-    document.getElementById('caption-char-count').textContent = '0 characters';
-    document.getElementById('generate-continue').disabled = true;
-    document.getElementById('generate-btn').disabled = false;
-    document.getElementById('generate-btn').innerHTML = `
-      <svg xmlns="http://www.w3.org/2000/svg" style="height:1rem;width:1rem" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 3l14 9-14 9V3z"/></svg>
-      Generate Caption &amp; Hashtags`;
-    renderStepIndicator('step-indicator-3', 3);
+  function buildHashtags(container) {
+    container.innerHTML = '';
+    currentHashtags.forEach((tag, i) => {
+      setTimeout(() => {
+        const chip = document.createElement('span');
+        chip.className = 'hash-chip';
+        chip.innerHTML = `#${tag}<button onclick="removeHashtag(this,'${tag}',this.closest('#preview-hashtags,#editor-hashtags'))">×</button>`;
+        container.appendChild(chip);
+      }, i * 80);
+    });
   }
 
-  function runGenerate() {
-    if (generateRan) return;
-    generateRan = true;
-    const btn = document.getElementById('generate-btn');
-    btn.disabled = true;
-    btn.innerHTML = `
-      <svg xmlns="http://www.w3.org/2000/svg" style="height:1rem;width:1rem;animation:spin 1s linear infinite" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>
-      Generating…`;
-
-    const caption = CAPTIONS[captionIdx % CAPTIONS.length];
-    const hashtags = HASHTAG_SETS[hashtagIdx % HASHTAG_SETS.length];
-
-    setTimeout(() => {
-      // Reveal caption card with typewriter
-      const captionCard = document.getElementById('caption-card');
-      captionCard.classList.remove('hidden');
-      const output = document.getElementById('caption-output');
-      const charCount = document.getElementById('caption-char-count');
-      let i = 0;
-      const type = setInterval(() => {
-        if (i < caption.length) {
-          output.value = caption.slice(0, ++i);
-          charCount.textContent = `${i} characters`;
-        } else {
-          clearInterval(type);
-          generatedCaption = caption;
-
-          // Reveal hashtag card
-          const hashtagsCard = document.getElementById('hashtags-card');
-          hashtagsCard.classList.remove('hidden');
-          const hashContainer = document.getElementById('hashtags-output');
-          hashContainer.innerHTML = '';
-          hashtags.forEach((tag, j) => {
-            setTimeout(() => {
-              const chip = document.createElement('span');
-              chip.className = 'hashtag-chip';
-              chip.innerHTML = `#${tag} <span onclick="removeHashtag(this,'${tag}')" style="opacity:.7;font-size:.7rem">×</span>`;
-              hashContainer.appendChild(chip);
-            }, j * 120);
-          });
-          generatedHashtags = [...hashtags];
-
-          setTimeout(() => {
-            document.getElementById('generate-continue').disabled = false;
-            btn.disabled = false;
-            btn.innerHTML = `
-              <svg xmlns="http://www.w3.org/2000/svg" style="height:1rem;width:1rem;animation:spin 1s linear infinite" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>`;
-            btn.innerHTML = `
-              <svg xmlns="http://www.w3.org/2000/svg" style="height:1rem;width:1rem" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>
-              Regenerate All`;
-            generateRan = false;
-          }, hashtags.length * 120 + 200);
-        }
-      }, 22);
-    }, 1400);
-  }
-
-  function regenCaption() {
-    captionIdx++;
-    const caption = CAPTIONS[captionIdx % CAPTIONS.length];
-    const output = document.getElementById('caption-output');
-    output.value = '';
-    let i = 0;
-    const type = setInterval(() => {
-      if (i < caption.length) {
-        output.value = caption.slice(0, ++i);
-        document.getElementById('caption-char-count').textContent = `${i} characters`;
-      } else {
-        clearInterval(type);
-        generatedCaption = caption;
-      }
-    }, 18);
+  function removeHashtag(btn, tag, container) {
+    btn.closest('.hash-chip').remove();
+    currentHashtags = currentHashtags.filter(t => t !== tag);
   }
 
   function regenHashtags() {
-    hashtagIdx++;
-    const hashtags = HASHTAG_SETS[hashtagIdx % HASHTAG_SETS.length];
-    const hashContainer = document.getElementById('hashtags-output');
-    hashContainer.innerHTML = '';
-    hashtags.forEach((tag, j) => {
-      setTimeout(() => {
-        const chip = document.createElement('span');
-        chip.className = 'hashtag-chip';
-        chip.innerHTML = `#${tag} <span onclick="removeHashtag(this,'${tag}')" style="opacity:.7;font-size:.7rem">×</span>`;
-        hashContainer.appendChild(chip);
-      }, j * 100);
-    });
-    generatedHashtags = [...hashtags];
+    hashtagIdx = (hashtagIdx + 1) % HASHTAG_SETS.length;
+    currentHashtags = [...HASHTAG_SETS[hashtagIdx]];
+    const pvContainer = document.getElementById('preview-hashtags');
+    const edContainer = document.getElementById('editor-hashtags');
+    if (pvContainer && !pvContainer.closest('.hidden')) buildHashtags(pvContainer);
+    if (edContainer && !edContainer.closest('.hidden')) buildHashtags(edContainer);
   }
 
-  function removeHashtag(el, tag) {
-    el.parentElement.remove();
-    generatedHashtags = generatedHashtags.filter(t => t !== tag);
+  // ── Editor ───────────────────────────────────────────────
+  function gotoEditor() {
+    if (selectedPreviewSlots.length === 0) selectedPreviewSlots = [0];
+
+    editorImages = selectedPreviewSlots.map(i => PREVIEW_SLOTS[i]);
+    editorSlideIdx = 0;
+
+    gotoView('editor');
+    updateEditorSlide();
+
+    const captionTA = document.getElementById('editor-caption');
+    captionTA.value = currentCaption;
+    updateCharCount();
+    captionTA.addEventListener('input', updateCharCount);
+
+    buildHashtags(document.getElementById('editor-hashtags'));
+
+    // Slide indicator
+    buildSlideIndicator();
   }
 
-  // ---- Preview step ----
-  function buildPreview() {
-    renderStepIndicator('step-indicator-4', 4);
+  function updateEditorSlide() {
+    if (editorImages.length === 0) return;
+    const img = editorImages[editorSlideIdx];
+    const el = document.getElementById('editor-main-img');
+    el.src = img.src;
+    el.style.filter = img.filter;
+    buildSlideIndicator();
 
-    // Pick the primary selected image (first selected slot, fallback to selectedImageSrc)
-    const primarySlotIdx = selectedSlotIndices[0];
-    const primarySrc = primarySlotIdx !== undefined
-      ? SLOTS[primarySlotIdx].src
-      : selectedImageSrc;
-    const primaryFilter = primarySlotIdx !== undefined ? SLOTS[primarySlotIdx].filter : '';
+    const prevBtn = document.getElementById('editor-prev');
+    const nextBtn = document.getElementById('editor-next');
+    if (prevBtn) prevBtn.style.display = editorImages.length > 1 ? '' : 'none';
+    if (nextBtn) nextBtn.style.display = editorImages.length > 1 ? '' : 'none';
+  }
 
-    const previewImg = document.getElementById('preview-image');
-    previewImg.src = primarySrc;
-    previewImg.style.filter = primaryFilter;
-
-    const caption = document.getElementById('caption-output')?.value || generatedCaption;
-    generatedCaption = caption;
-
-    document.getElementById('preview-caption-text').innerHTML =
-      `<strong>your_brand</strong> ${caption.slice(0, 80)}${caption.length > 80 ? '…' : ''}`;
-    document.getElementById('preview-caption-panel').textContent = caption;
-
-    const tags = generatedHashtags.length ? generatedHashtags
-      : Array.from(document.querySelectorAll('.hashtag-chip'))
-          .map(el => el.textContent.replace('×','').trim().replace('#',''));
-
-    document.getElementById('preview-hashtag-text').textContent = tags.map(t => '#' + t).join(' ');
-
-    const panelContainer = document.getElementById('preview-hashtags-panel');
-    panelContainer.innerHTML = tags.map(t =>
-      `<span class="preview-chip">#${t}</span>`
+  function buildSlideIndicator() {
+    const ind = document.getElementById('editor-slide-indicator');
+    if (!ind || editorImages.length <= 1) { if (ind) ind.innerHTML = ''; return; }
+    ind.innerHTML = editorImages.map((_, i) =>
+      `<div style="width:.5rem;height:.5rem;border-radius:50%;background:${i===editorSlideIdx ? '#A78BFA' : 'rgba(167,139,250,.3)'};transition:background .2s"></div>`
     ).join('');
+  }
 
-    // Reset publish button
-    const btn = document.getElementById('publish-btn');
-    btn.disabled = false;
-    btn.innerHTML = `
-      <svg xmlns="http://www.w3.org/2000/svg" style="height:1.125rem;width:1.125rem" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"/></svg>
-      Publish to Instagram`;
+  function editorCarousel(dir) {
+    editorSlideIdx = (editorSlideIdx + dir + editorImages.length) % editorImages.length;
+    updateEditorSlide();
+  }
+
+  function updateCharCount() {
+    const ta = document.getElementById('editor-caption');
+    const cc = document.getElementById('editor-char-count');
+    if (ta && cc) cc.textContent = `${ta.value.length} karakter`;
+  }
+
+  function regenCaption() {
+    captionIdx = (captionIdx + 1) % CAPTIONS.length;
+    currentCaption = CAPTIONS[captionIdx];
+    const ta = document.getElementById('editor-caption');
+    if (!ta) return;
+    ta.value = '';
+    let i = 0;
+    const type = setInterval(() => {
+      if (i < currentCaption.length) {
+        ta.value = currentCaption.slice(0, ++i);
+        updateCharCount();
+      } else {
+        clearInterval(type);
+      }
+    }, 16);
+  }
+
+  function saveDraft() {
+    draftCount++;
+    document.getElementById('stat-drafts').textContent = draftCount;
+    document.getElementById('drafts-count').textContent = `(${draftCount})`;
+    showToast('Taslak kaydedildi', 'Taslaklar bölümünde görüntüleyebilirsin');
+
+    // Add card to drafts grid
+    const grid = document.getElementById('drafts-grid');
+    const card = document.createElement('div');
+    card.className = 'post-card';
+    card.style.animation = 'fadeIn .4s ease-out';
+    card.innerHTML = `
+      <div class="post-thumb">
+        <img src="${editorImages[0]?.src || selectedImageSrc}" class="thumb-img" style="filter:grayscale(.4)" alt="Taslak"/>
+        <span class="post-badge badge-draft">Taslak</span>
+      </div>
+      <div class="post-info">
+        <p class="post-title muted-text">${currentCaption.slice(0,32)}…</p>
+        <p class="post-date">Az önce</p>
+      </div>`;
+    grid.insertBefore(card, grid.firstChild);
+
+    setTimeout(() => gotoView('dashboard'), 1200);
+  }
+
+  function schedulePost() {
+    showToast('Planlandı! 📅', 'Yarın · 19:00 için planlandı');
+    document.getElementById('stat-scheduled').textContent =
+      parseInt(document.getElementById('stat-scheduled').textContent) + 1;
+    setTimeout(() => gotoView('dashboard'), 1200);
   }
 
   function doPublish() {
     const btn = document.getElementById('publish-btn');
     btn.disabled = true;
-    btn.innerHTML = `
-      <svg xmlns="http://www.w3.org/2000/svg" style="height:1rem;width:1rem;animation:spin 1s linear infinite" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>
-      Publishing…`;
+    btn.innerHTML = `<svg style="animation:spin 1s linear infinite" xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>Yayınlanıyor…`;
     setTimeout(() => {
       publishedCount++;
-      switchView('success');
-    }, 1600);
+      gotoView('success');
+    }, 1800);
   }
 
   function backToDashboard() {
-    // Update stat counter
     document.getElementById('stat-published').textContent = publishedCount;
-    document.getElementById('pub-count-label').textContent = `(${publishedCount})`;
+    document.getElementById('pub-count').textContent = `(${publishedCount})`;
 
-    // Inject new post card
+    // Inject new published card
     const grid = document.getElementById('published-grid');
-    const primarySlotIdx = selectedSlotIndices[0];
-    const src = primarySlotIdx !== undefined ? SLOTS[primarySlotIdx].src : selectedImageSrc;
-    const filter = primarySlotIdx !== undefined ? SLOTS[primarySlotIdx].filter : '';
-    const captionSnippet = generatedCaption ? generatedCaption.slice(0, 40) + '…' : 'New post';
-
+    const src = editorImages[0]?.src || selectedImageSrc;
+    const filter = editorImages[0]?.filter || '';
+    const caption = currentCaption.slice(0, 36) + '…';
     const card = document.createElement('div');
     card.className = 'post-card';
-    card.style.borderColor = 'rgba(173,101,191,.5)';
-    card.style.animation = 'fadeInUp .4s ease-out';
+    card.style.animation = 'fadeIn .4s ease-out';
+    card.style.borderColor = 'rgba(167,139,250,.45)';
     card.innerHTML = `
       <div class="post-thumb">
-        <img src="${src}" class="thumb-img" style="filter:${filter}" alt="New post" />
-        <span class="post-badge" style="background:rgba(173,101,191,.2);color:#AD65BF">Just published ✨</span>
+        <img src="${src}" class="thumb-img" style="filter:${filter}" alt="Yeni gönderi"/>
+        <span class="post-badge badge-published">Az önce ✨</span>
       </div>
       <div class="post-info">
-        <p class="post-title">${captionSnippet}</p>
-        <p class="post-date">Just now</p>
+        <p class="post-title">${caption}</p>
+        <p class="post-date">Az önce</p>
       </div>`;
     grid.insertBefore(card, grid.firstChild);
 
-    switchView('dashboard');
-    setActiveNav('dashboard');
+    // Reset create flow state
+    resetCreateFlow();
+    gotoView('dashboard');
   }
 
-  // ---- Banner ----
+  function resetCreateFlow() {
+    composerHasImage = false;
+    selectedImageSrc = '/demo-photo.avif';
+    selectedPreviewSlots = [];
+    editorImages = [];
+    editorSlideIdx = 0;
+    document.getElementById('composer-thumb').classList.add('hidden');
+    document.getElementById('continue-btn-text').textContent = 'Fotoğraf Seç';
+    document.getElementById('continue-img-icon').style.display = '';
+    document.getElementById('composer-textarea').value = '';
+    document.querySelectorAll('.preset-btn').forEach(b => b.classList.remove('selected'));
+    document.getElementById('create-compose').classList.remove('hidden');
+    document.getElementById('create-templates').classList.add('hidden');
+    document.getElementById('preset-picker').classList.add('hidden');
+    document.getElementById('ai-settings-panel').classList.add('hidden');
+    settingsOpen = false;
+    presetPickerOpen = false;
+  }
+
+  // ── Toast ────────────────────────────────────────────────
+  let toastTimer = null;
+  function showToast(title, sub) {
+    document.getElementById('toast-title').textContent = title;
+    document.getElementById('toast-sub').textContent = sub;
+    const t = document.getElementById('toast');
+    t.classList.remove('hidden');
+    if (toastTimer) clearTimeout(toastTimer);
+    toastTimer = setTimeout(hideToast, 4000);
+  }
+  function hideToast() {
+    document.getElementById('toast').classList.add('hidden');
+  }
+
+  // ── Logout (demo) ────────────────────────────────────────
   document.addEventListener('DOMContentLoaded', () => {
+    // Banner close
     document.getElementById('close-banner')?.addEventListener('click', () => {
       document.getElementById('demo-banner').remove();
       document.getElementById('app').style.top = '0';
     });
 
-    // Wire up nav dashboard button
-    document.getElementById('nav-dashboard')?.addEventListener('click', () => {
-      switchView('dashboard');
-      setActiveNav('dashboard');
+    // Logout (just show toast)
+    document.getElementById('logout-btn')?.addEventListener('click', () => {
+      showToast('Demo modundasın', 'Gerçek çıkış işlemi yapılamaz');
+    });
+
+    // Theme toggle (demo — just visual)
+    document.getElementById('theme-toggle-btn')?.addEventListener('click', () => {
+      showToast('Tema değiştirme', 'Gerçek uygulamada 3 tema var: Violet Dusk, Lavender Light, Sanctuary');
     });
   });
 </script>
